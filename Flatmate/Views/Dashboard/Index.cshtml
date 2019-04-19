@@ -1,0 +1,71 @@
+﻿@model Flatmate.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+<div id="dashboard-wrapper">
+    <div id="stack-panels-wrapper">
+        <div class="owe-stack-panel">
+            <p>I owe</p>
+            <ul class="horizontal">
+                @foreach (var item in Model.UserLiabilities)
+                {
+                    // TODO: add all user's debts here (in preprepared html element using js)
+                <li>
+                    @*@Html.RenderPartialAsync("LiabilityExpenseThumbnailPartialView", @Model)*@
+                    <partial name="LiabilityExpenseThumbnailPartialView" model="item" />
+                    @*@item.InitiatorFirstName with value @item.Value*@
+                </li>
+                }
+            </ul>
+        </div>
+        <div class="owe-stack-panel">
+            <p>I am owed</p>
+            <ul class="horizontal">
+                @foreach (var item in Model.UserCredibilities)
+                {
+                    // TODO: add all user's debts here (in preprepared html element using js)
+                <li>
+                    <partial name="CredibilityExpenseThumbnailPartialView" model="item" />
+                    @*@item.InitiatorFirstName with value @item.Value*@
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div id="budget-summary-wrapper">
+        <ul>
+            @foreach(var item in Model.FlatmateBalances)
+            {
+                <li>
+                    For @item.Key balance is @item.Value
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>*@
