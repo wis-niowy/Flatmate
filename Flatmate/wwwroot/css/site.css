@@ -36,37 +36,79 @@
 
 /* ******************************* */
 
+ul {
+    list-style: none;
+}
+
+li:hover .expense-thumbnail .expense-manager-menu-item {
+    cursor: pointer;
+}
 
 .horizontal {
     margin: 0;
-    padding: 0;
+    padding: 25px;
 }
 
-    .horizontal li {
-        display: inline-block;
-        box-sizing: border-box;
-        width: 100px;
-        height: 100px;
-        border: 1px solid #000;
-    }
+.horizontal li {
+    display: inline-block;
+}
 
 #stack-panels-wrapper {
-    border: 1px solid blue;
+    box-sizing: border-box;
+    border-radius: 25px;
     overflow: hidden;
 }
 
 .owe-stack-panel {
-    box-sizing: border-box;
-    /*display: inline-block;*/
-    float: left;
+    /*box-sizing: border-box;
+    display: inline-block;
+    float: left;*/
     width: 50%;
-    /* height: 120px; */
-    border: 1px solid red;
-    padding: 25px;
+    /*border-radius: 25px;
+    border: 2px solid #4df94a;
+    background-color: #b9ffb7;
+    padding: 20px;*/
+}
+
+.menu-stack-panel {
+    width: 100%;
+}
+
+.stack-panel {
+    box-sizing: border-box;
+    float: left;
+    /*width: 50%;*/
+    border-radius: 25px;
+    border: 2px solid #4df94a;
+    background-color: #b9ffb7;
+    padding: 20px;
 }
 
 #budget-summary-wrapper {
     box-sizing: border-box;
-    border: 1px solid red;
+    border-radius: 25px;
+    border: 1px solid #3a85ff;
     padding: 25px;
+}
+
+.expense-thumbnail {
+    box-sizing: border-box;
+    min-height: 100px;
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    background-color: #87ff84;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.expense-manager-menu-item {
+    box-sizing: border-box;
+    min-height: 100px;
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    background-color: #87ff84;
+    padding: 20px;
+    overflow: hidden;
+    width: 25vh;
+    height: 25vh;
 }

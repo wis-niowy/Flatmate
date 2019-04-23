@@ -29,7 +29,7 @@ namespace Flatmate.Controllers
 
         public IActionResult Index()
         {
-            var userId = 1;
+            var userId = 1; // id will be extracted from user context
             var teamId = _repository.Users.GetUserTeamId(userId);
             var team = _repository.Teams.GetTeamWithMembersById(teamId);
             var credi = _repository.Expenses.GetUserCredibilities(userId);
@@ -40,15 +40,17 @@ namespace Flatmate.Controllers
                                                            credi);
             var userCrediPerDebitor = _service.GetUserSpecificCredibilityThumbnailModels(userId, credi);
             var userLiabSplited = _service.GetUserSpecificLiabilityThumbnailModels(userId, liab);
-            //var temp = ;
+            
             var DataModel = new DashboardViewModel
             {
-                UserLiabilities = userLiabSplited.Select(obj => _mapper.Map<LiabilityExpenseThumbnailViewModel>(obj)),
-                UserCredibilities = userCrediPerDebitor.Select(obj => _mapper.Map<CredibilityExpenseThumbnailViewModel>(obj)),
+                UserLiabilities = userLiabSplited.Select(obj => _mapper.Map<LiabilityExpenseViewModel>(obj)),
+                UserCredibilities = userCrediPerDebitor.Select(obj => _mapper.Map<CredibilityExpenseViewModel>(obj)),
                 FlatmateBalances = balances
             };
 
             return View(DataModel);
         }
+
+        
     }
 }

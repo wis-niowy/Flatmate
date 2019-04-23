@@ -35,7 +35,11 @@ namespace Flatmate
 
             services.AddAutoMapper();
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(options => {
+                    //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                });
             services.AddDbContext<FlatmateContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("FlatmateDatabase")));
             //services.AddDbContext<FlatmateContext>

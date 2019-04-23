@@ -6,9 +6,8 @@ using Flatmate.Models.EntityModels;
 
 namespace Flatmate.Models.IRepositories
 {
-    public interface IUserRepository: IRepository<User>
+    public interface IScheduledEventRepository: IRepository<ScheduledEvent>
     {
-        int GetUserTeamId(int userId);
-        //ICollection<User> GetUserFlatmates(int userId);
+        IReadOnlyCollection<ScheduledEvent> GetAllEvents(int userId);
     }
 }

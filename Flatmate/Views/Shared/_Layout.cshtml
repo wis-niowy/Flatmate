@@ -8,6 +8,8 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -31,8 +33,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Dashboard" asp-action="Index">Main Dashboard</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">Scheduler</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Budget Manager</a></li>
+                    <li><a asp-area="" asp-controller="Scheduler" asp-action="Index">Scheduler</a></li>
+                    <li><a asp-area="" asp-controller="ExpenseManager" asp-action="Index">Budget Manager</a></li>
                     <li><a asp-area="" asp-controller="Users" asp-action="Index">Manage Your Profile</a></li>
                 </ul>
             </div>

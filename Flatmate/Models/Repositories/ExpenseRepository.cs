@@ -41,6 +41,8 @@ namespace Flatmate.Models.Repositories
         /// <returns></returns>
         public IEnumerable<Expense> GetUserLiabilities(int userId)
         {
+            // TODO: try to do select on junction table as it contains references to both related objects - in this way join will not be required
+
             IEnumerable<Expense> expenseList = FlatmateContext.Expenses
                 .Join(FlatmateContext.ExpenseDebitor, expense => expense.ExpenseId, expdeb => expdeb.ExpenseId, (expense, expdeb) => new
                 {

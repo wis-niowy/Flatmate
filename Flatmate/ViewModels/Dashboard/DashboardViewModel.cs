@@ -9,8 +9,8 @@ namespace Flatmate.ViewModels
 {
     public class DashboardViewModel
     {
-        public IEnumerable<LiabilityExpenseThumbnailViewModel> UserLiabilities { get; set; } // 'I owe'
-        public IEnumerable<CredibilityExpenseThumbnailViewModel> UserCredibilities { get; set; } // 'I am owed'
+        public IEnumerable<LiabilityExpenseViewModel> UserLiabilities { get; set; } // 'I owe'
+        public IEnumerable<CredibilityExpenseViewModel> UserCredibilities { get; set; } // 'I am owed'
         public Dictionary<User,double> FlatmateBalances { get; set; } // balance with every flatmate
     }
 }

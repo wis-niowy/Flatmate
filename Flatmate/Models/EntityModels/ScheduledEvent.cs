@@ -10,9 +10,11 @@ namespace Flatmate.Models.EntityModels
         public int ScheduledEventId { get; set; }
         //public int TeamId { get; set; }
         public int OwnerId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string Title { get; set; }
         public string Desription { get; set; }
+        public bool IsFullDay { get; set; }
 
         // relationships
         //public Team Team { get; set; }

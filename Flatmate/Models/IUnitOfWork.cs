@@ -11,6 +11,8 @@ namespace Flatmate.Models
         IUserRepository Users { get; }
         ITeamRepository Teams { get; }
         IExpenseRepository Expenses { get; }
+        IScheduledEventRepository ScheduledEvents { get; set; }
         int Complete();
+        Task<int> CompleteAsync();
     }
 }

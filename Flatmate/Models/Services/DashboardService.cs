@@ -86,7 +86,16 @@ namespace Flatmate.Models.Services
             return userCredibilities
                 .SelectMany(exp => exp.DebitorsCollection)
                 .Select(expdeb => new ExpenseDebitor {
-                    Expense = expdeb.Expense,
+                    Expense = new Expense {
+                        ExpenseId = expdeb.Expense.ExpenseId,
+                        InitiatorId = expdeb.Expense.InitiatorId,
+                        Initiator = expdeb.Expense.Initiator,
+                        Date = expdeb.Expense.Date,
+                        Value = expdeb.Expense.Value / expdeb.Expense.DebitorsCollection.Count(),
+                        ExpenseSubject = expdeb.Expense.ExpenseSubject,
+                        ExpenseCategory = expdeb.Expense.ExpenseCategory,
+                        DebitorsCollection = expdeb.Expense.DebitorsCollection
+                    },
                     Debitor = expdeb.Debitor
                 });
         }

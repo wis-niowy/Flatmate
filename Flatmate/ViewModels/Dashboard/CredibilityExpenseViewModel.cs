@@ -9,7 +9,7 @@ namespace Flatmate.ViewModels.Dashboard
     /// <summary>
     /// ViewModel for card item view of incoming expenses on Dashboard
     /// </summary>
-    public class CredibilityExpenseThumbnailViewModel
+    public class CredibilityExpenseViewModel
     {
         public double Value { get; set; }
         public int InitiatorId { get; set; }

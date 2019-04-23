@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Flatmate.Models.EntityModels;
 using Flatmate.ViewModels.Dashboard;
 using AutoMapper;
+using Flatmate.ViewModels.ExpenseManager;
 
 namespace Flatmate.Helpers
 {
@@ -12,8 +13,8 @@ namespace Flatmate.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<Expense, LiabilityExpenseThumbnailViewModel>();
-            CreateMap<ExpenseDebitor, CredibilityExpenseThumbnailViewModel>()
+            CreateMap<Expense, LiabilityExpenseViewModel>();
+            CreateMap<ExpenseDebitor, CredibilityExpenseViewModel>()
                 .ForMember(dest => dest.InitiatorFirstName,
                     m => m.MapFrom(src => src.Expense.Initiator.FirstName))
                 .ForMember(dest => dest.InitiatorLastName,
@@ -32,6 +33,12 @@ namespace Flatmate.Helpers
                     m => m.MapFrom(src => src.Debitor.FirstName))
                 .ForMember(dest => dest.DebitorLastName,
                     m => m.MapFrom(src => src.Debitor.LastName));
+            CreateMap<int, ExpenseDebitor>()
+                .ForMember(dest => dest.DebitorId,
+                    m => m.MapFrom(src => src));
+            CreateMap<NewSingleExpenseViewModel, Expense>()
+                .ForMember(dest => dest.DebitorsCollection,
+                    m => m.MapFrom(src => src.DebitorsCollection));
         }
     }
 }
