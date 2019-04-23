@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "Expense Manager";
+}
+
+<h2>Expense Manager</h2>
+
+<div class="container">
+    <p>To make the tabs toggleable, add the data-toggle="tab" attribute to each link. Then add a .tab-pane class with a unique ID for every tab and wrap them inside a div element with class .tab-content.</p>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#one-time-expenses">One-Time Expenses</a></li>
+        <li><a data-toggle="tab" href="#recurring-expenses">Recurring Expenses</a></li>
+        <li><a data-toggle="tab" href="#orders">Orders</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="one-time-expenses" class="tab-pane fade in active">
+            <h3>One-Time Expenses</h3>
+            <partial name="OneTimeExpenseMenuPartialView" />
+        </div>
+        <div id="recurring-expenses" class="tab-pane fade">
+            <h3>Recurring Expenses</h3>
+            <partial name="RecurringExpenseMenuPartialView" />
+        </div>
+        <div id="orders" class="tab-pane fade">
+            <h3>Orders</h3>
+            <partial name="OrderMenuPartialView" />
+        </div>
+    </div>
+</div>
