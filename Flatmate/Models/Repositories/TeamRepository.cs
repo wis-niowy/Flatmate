@@ -28,5 +28,22 @@ namespace Flatmate.Models.Repositories
                 .ToList()
                 .FirstOrDefault();
         }
+
+        public Team GetUserTeamWithMembers(int userId)
+        {
+            var teamId = FlatmateContext.Users
+                .Where(usr => usr.UserId == userId)
+                .Select(usr => usr.TeamId)
+                .FirstOrDefault();
+            return GetTeamWithMembersById(teamId);
+        }
+
+        public List<User> GetUserFlatmates(int userId)
+        {
+            var team = GetUserTeamWithMembers(userId);
+            return team.UsersCollection
+                .Where(usr => usr.UserId != userId)
+                .ToList();
+        }
     }
 }

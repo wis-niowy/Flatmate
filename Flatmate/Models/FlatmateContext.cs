@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Flatmate.Models.EntityModels;
+using Flatmate.Helpers;
 
 namespace Flatmate.Models
 {
@@ -192,7 +193,7 @@ namespace Flatmate.Models
                     ExpenseSubject = "Expense 1",
                     Date = new DateTime(2019, 04, 18),
                     Value = 15.50,
-                    ExpenseCategory = 1
+                    ExpenseCategory = ExpenseCategory.Shopping
                 },
                 new Expense
                 {
@@ -202,7 +203,7 @@ namespace Flatmate.Models
                     ExpenseSubject = "Expense 2",
                     Date = new DateTime(2019, 04, 18),
                     Value = 12.00,
-                    ExpenseCategory = 2
+                    ExpenseCategory = ExpenseCategory.Shopping
                 },
                 new Expense
                 {
@@ -212,7 +213,7 @@ namespace Flatmate.Models
                     ExpenseSubject = "Expense 3",
                     Date = new DateTime(2019, 04, 18),
                     Value = 125.00,
-                    ExpenseCategory = 1
+                    ExpenseCategory = ExpenseCategory.Shopping
                 },
                 new Expense
                 {
@@ -222,7 +223,7 @@ namespace Flatmate.Models
                     ExpenseSubject = "Expense 4",
                     Date = new DateTime(2019, 04, 18),
                     Value = 78.20,
-                    ExpenseCategory = 1
+                    ExpenseCategory = ExpenseCategory.Shopping
                 });
             mb.Entity<ExpenseDebitor>().HasData(
                 new ExpenseDebitor

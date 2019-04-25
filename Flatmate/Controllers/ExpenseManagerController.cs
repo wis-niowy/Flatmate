@@ -26,12 +26,11 @@ namespace Flatmate.Controllers
             return View();
         }
 
+        #region OneTimeExpenseControllers
         public IActionResult NewSingleExpense()
         {
             int userId = 1;
-            var teamId = _repository.Users.GetUserTeamId(userId);
-            var team = _repository.Teams.GetTeamWithMembersById(teamId);
-            var flatmates = team.UsersCollection.Where(el => el.UserId != userId).ToList();
+            var flatmates = _repository.Teams.GetUserFlatmates(userId);
             var viewModel = new NewSingleExpenseViewModel(flatmates);
             return View(viewModel);
         }
@@ -54,20 +53,151 @@ namespace Flatmate.Controllers
 
         public IActionResult NewExpenseList()
         {
-            return View();
+            int userId = 1;
+            //var teamId = _repository.Users.GetUserTeamId(userId);
+            //var team = _repository.Teams.GetTeamWithMembersById(teamId);
+            //var flatmates = team.UsersCollection.Where(el => el.UserId != userId).ToList();
+            var viewModel = new NewExpenseListViewModel();
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> NewExpenseList([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
+        public async Task<IActionResult> NewExpenseList([Bind("ExtExpenseItems")] NewExpenseListViewModel expenseViewModel)
         {
             int userId = 1;
             if (ModelState.IsValid)
             {
-                
+                var expenses = expenseViewModel.ExtExpenseItems.Select(el => _mapper.Map<Expense>(el)).ToList();
+                foreach (var exp in expenses)
+                {
+                    exp.InitiatorId = userId;
+                }
+                _repository.Expenses.AddRange(expenses);
+                await _repository.CompleteAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View();
         }
+
+        public IActionResult GetExpenseListItemPartialView()
+        {
+            //var flatmates = TempData["flatmates"];
+            //var viewModel = new NewExpenseListViewModel(flatmates as List<User>);
+            int userId = 1;
+            var flatmates = _repository.Teams.GetUserFlatmates(userId);
+            var viewModel = new NewSingleExpenseViewModel(flatmates);
+            return PartialView("ExpenseListItemPartialView", viewModel);
+        }
+
+        public IActionResult ViewOneTimeExpenses()
+        {
+            int userId = 1;
+            var userExpenses = _repository.Expenses.Find(exp => exp.InitiatorId == userId);
+            //var flatmates = _repository.Teams.GetUserFlatmates(userId);
+            var viewModel = userExpenses.Select(exp => _mapper.Map<ExistingSingleExpenseViewModel>(exp));
+            return View(viewModel);
+        }
+
+        public IActionResult EditOneTimeExpense(int expenseId)
+        {
+            int userId = 1;
+            var flatmates = _repository.Teams.GetUserFlatmates(userId);
+            var viewModel = new NewSingleExpenseViewModel(flatmates);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditOneTimeExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
+        {
+            int userId = 1;
+            if (ModelState.IsValid)
+            {
+                Expense newExpense = _mapper.Map<Expense>(expenseViewModel);
+                newExpense.InitiatorId = userId;
+                _repository.Expenses.Add(newExpense);
+                await _repository.CompleteAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        public IActionResult DeleteOneTimeExpense()
+        {
+            int userId = 1;
+            var flatmates = _repository.Teams.GetUserFlatmates(userId);
+            var viewModel = new NewSingleExpenseViewModel(flatmates);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteOneTimeExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
+        {
+            int userId = 1;
+            if (ModelState.IsValid)
+            {
+                Expense newExpense = _mapper.Map<Expense>(expenseViewModel);
+                newExpense.InitiatorId = userId;
+                _repository.Expenses.Add(newExpense);
+                await _repository.CompleteAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+        #endregion
+
+        #region RecurringExpenseControlers
+        public IActionResult NewRecurringExpense()
+        {
+            int userId = 1;
+            var flatmates = _repository.Teams.GetUserFlatmates(userId);
+            var viewModel = new NewRecurringExpenseViewModel(flatmates);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NewRecurringExpense([Bind("BillSubject,Value,Frequency,StartDate,DebitorsCollection")] NewRecurringExpenseViewModel recExpenseViewModel)
+        {
+            int userId = 1;
+            if (ModelState.IsValid)
+            {
+                RecurringBill newRecExpense = _mapper.Map<RecurringBill>(recExpenseViewModel);
+                newRecExpense.InitiatorId = userId;
+                _repository.RecurringBills.Add(newRecExpense);
+                await _repository.CompleteAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+        #endregion
+
+        #region OrderControlers
+        public IActionResult NewOrder()
+        {
+            int userId = 1;
+            var flatmates = _repository.Teams.GetUserFlatmates(userId);
+            var viewModel = new NewOrderViewModel(flatmates);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NewOrder([Bind("OrderSubject,ExpenseCategory,Date,DebitorsCollection")] NewOrderViewModel orderViewModel)
+        {
+            int userId = 1;
+            if (ModelState.IsValid)
+            {
+                Order newOrder = _mapper.Map<Order>(orderViewModel);
+                newOrder.InitiatorId = userId;
+                _repository.Orders.Add(newOrder);
+                await _repository.CompleteAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+        #endregion
     }
 }

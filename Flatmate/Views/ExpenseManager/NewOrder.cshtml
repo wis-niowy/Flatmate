@@ -1,30 +1,25 @@
 ﻿@using Flatmate.Helpers;
-@model Flatmate.ViewModels.ExpenseManager.NewSingleExpenseViewModel
+@model Flatmate.ViewModels.ExpenseManager.NewOrderViewModel
 
 @{
-    ViewData["Title"] = "NewSingleExpense";
+    ViewData["Title"] = "NewOrder";
 }
 
-<h2>NewSingleExpense</h2>
+<h2>NewOrder</h2>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="NewSingleExpense">
+        <form asp-action="NewOrder">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ExpenseSubject" class="control-label"></label>
-                <input asp-for="ExpenseSubject" class="form-control" />
-                <span asp-validation-for="ExpenseSubject" class="text-danger"></span>
+                <label asp-for="OrderSubject" class="control-label"></label>
+                <input asp-for="OrderSubject" class="form-control" />
+                <span asp-validation-for="OrderSubject" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Value" class="control-label"></label>
-                <input asp-for="Value" class="form-control" />
-                <span asp-validation-for="Value" class="text-danger"></span>
             </div>
             <select asp-for="ExpenseCategory"
                     asp-items="Html.GetEnumSelectList<ExpenseCategory>()"

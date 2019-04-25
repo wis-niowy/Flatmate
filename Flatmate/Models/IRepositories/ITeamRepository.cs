@@ -9,5 +9,7 @@ namespace Flatmate.Models.IRepositories
     public interface ITeamRepository: IRepository<Team>
     {
         Team GetTeamWithMembersById(int teamId);
+        Team GetUserTeamWithMembers(int userId);
+        List<User> GetUserFlatmates(int userId);
     }
 }

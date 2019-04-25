@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flatmate.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Flatmate.Models.EntityModels
         public int InitiatorId { get; set; }
         //public int TeamId { get; set; }
         public string OrderSubject { get; set; }
+        public ExpenseCategory ExpenseCategory { get; set; }
         public DateTime Date { get; set; }
 
         // relationships

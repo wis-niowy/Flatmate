@@ -3,8 +3,12 @@
     <p>Select option</p>
     <div class="stack-panel menu-stack-panel">
         <ul class="horizontal">
-            <li class="expense-manager-menu-item">Item1</li>
-            <li class="expense-manager-menu-item">Item2</li>
+            <li>
+                <a class="btn btn-primary expense-manager-menu-item" asp-area="" asp-controller="ExpenseManager" asp-action="NewRecurringExpense">Add recurring expense</a>
+            </li>
+            <li>
+                <a class="btn btn-primary expense-manager-menu-item" asp-area="" asp-controller="ExpenseManager" asp-action=""></a>
+            </li>
         </ul>
     </div>
 </div>

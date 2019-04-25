@@ -4,38 +4,18 @@
     ViewData["Title"] = "NewExpenseList";
 }
 
-<h2>NewSingleExpense</h2>
+<h2>NewExpenseList</h2>
 
 <div class="row">
     <div class="col-md-4">
         <form asp-action="NewExpenseList">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div>
-                <div class="form-group">
-                    <label asp-for="ExpenseSubject" class="control-label"></label>
-                    <input asp-for="ExpenseSubject" class="form-control" />
-                    <span asp-validation-for="ExpenseSubject" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Date" class="control-label"></label>
-                    <input asp-for="Date" class="form-control" />
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Value" class="control-label"></label>
-                    <input asp-for="Value" class="form-control" />
-                    <span asp-validation-for="Value" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ExpenseCategory" class="control-label"></label>
-                    <input asp-for="ExpenseCategory" class="form-control" />
-                    <span asp-validation-for="ExpenseCategory" class="text-danger"></span>
-                </div>
-                <select asp-for="DebitorsCollection"
-                        asp-items="@Model.FlatmatesCollection"
-                        class="form-control chosen-select" multiple="multiple">
-                    <option>Please select debitors</option>
-                </select>
+            <div id="expense-items-container">
+                @*<partial name="ExpenseListItemPartialView" model="" />*@
+                <!-- Here new expenses will be added dynamically -->
+            </div>
+            <div class="form-group">
+                <input id="add-expense-btn" style="background-color:darkcyan;color:white" type="button" value="Add next expense" class="btn btn-default" data-url="@Url.Action("GetExpenseListItemPartialView", "ExpenseManager", new { })" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -50,4 +30,36 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script>
+    $(document).ready(addNewExpenseItem);
+    $('#add-expense-btn').click(addNewExpenseItem);
+    $(document).on('click', '.remove-exp-item', function (event) {
+        console.log('Remove initiated by ' + event.target.tagName);
+        let clickedEl = event.target;
+        let targetEl = clickedEl.closest('fieldset.expense-item');
+        console.log('Target element: ' + targetEl.tagName);
+        jQuery(targetEl).fadeOut('slow', function () {
+            targetEl.remove();
+        });
+    });
+
+    function addNewExpenseItem() {
+        let newExpensePartialViewUrl = $('#add-expense-btn').data('url');
+        $.ajax({
+            type: "GET",
+            url: newExpensePartialViewUrl,
+            success: function (data, statusText, xhdr) {
+                console.log("new expense item received from ajax call");
+                let removeBtnId = 'remove-exp-btn-' + $(data).find("input[name*='.index']").attr('value');
+                console.log("id for delete button set to " + removeBtnId);
+                $(data).find('.remove-exp-item').attr('id', removeBtnId);
+                $('#expense-items-container').append(data).hide().fadeIn('slow');
+            },
+            error: function (xhdr, statusText, errorText) {
+                alert('get new expense item failed with message ' + errorText);
+            }
+        });
+    }
+    </script>
 }

@@ -1,0 +1,43 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore;
+@using Flatmate.Helpers;
+@model Flatmate.ViewModels.ExpenseManager.NewSingleExpenseViewModel
+
+<fieldset class="expense-item">
+    <legend>Expense details</legend>
+    @using (Html.BeginCollectionItem("ExtExpenseItems"))
+    {
+        <div class="form-group">
+            <label asp-for="ExpenseSubject" class="control-label"></label>
+            <input asp-for="ExpenseSubject" class="form-control" />
+            <span asp-validation-for="ExpenseSubject" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Date" class="control-label"></label>
+            <input asp-for="Date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Value" class="control-label"></label>
+            <input asp-for="Value" class="form-control" />
+            <span asp-validation-for="Value" class="text-danger"></span>
+        </div>
+        <select asp-for="ExpenseCategory"
+                asp-items="Html.GetEnumSelectList<ExpenseCategory>()"
+                class="form-control chosen-select">
+            <option>ExpenseCategory</option>
+        </select>
+        <div class="form-group">
+            <label asp-for="ExpenseCategory" class="control-label"></label>
+            <input asp-for="ExpenseCategory" class="form-control" />
+            <span asp-validation-for="ExpenseCategory" class="text-danger"></span>
+        </div>
+        <select asp-for="DebitorsCollection"
+                asp-items="@Model.FlatmatesCollection"
+                class="form-control chosen-select" multiple="multiple">
+            <option>Please select debitors</option>
+        </select>
+        <button type="button" class="close remove-exp-item" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    }
+</fieldset>

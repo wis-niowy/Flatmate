@@ -34,6 +34,8 @@ namespace Flatmate
             });
 
             services.AddAutoMapper();
+            services.AddMemoryCache();
+            services.AddSession();
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options => {

@@ -40,9 +40,13 @@ ul {
     list-style: none;
 }
 
-li:hover .expense-thumbnail .expense-manager-menu-item {
+li:hover .expense-thumbnail {
     cursor: pointer;
 }
+
+/*li:hover .expense-manager-menu-item {
+    cursor: pointer;
+}*/
 
 .horizontal {
     margin: 0;

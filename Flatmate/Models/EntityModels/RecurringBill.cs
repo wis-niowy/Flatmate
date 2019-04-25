@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flatmate.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace Flatmate.Models.EntityModels
         public int InitiatorId { get; set; }
         //public int TeamId { get; set; }
         public string BillSubject { get; set; }
-        [RegularExpression(@"^\d+\.\d{2}$")] // validate that the value has precision of two decimal places
-        [Range(0, 9999999999999999.99)]
+        [CurrencyValidation(ErrorMessage = "Value must be floting value with none decimal places or one or two decimal places preceded by a comma")]
         public double Value { get; set; }
-        public double Frequency { get; set; } // TODO: enum type { Daily, Weekly, 2Wekly, 3Weekly, Monthly, Annually }
+        public Frequency Frequency { get; set; }
+        public ExpenseCategory ExpenseCategory { get; set; }
         public DateTime LastEffectiveDate { get; set; }
         public DateTime NextEffectiveDate { get; set; }
 

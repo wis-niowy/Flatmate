@@ -11,31 +11,11 @@ namespace Flatmate.ViewModels.ExpenseManager
 {
     public class NewExpenseListViewModel
     {
-        public string ExpenseSubject { get; set; }
-        public DateTime Date { get; set; }
-        [RegularExpression(@"^\d+\.\d{2}$")]
-        [Range(0, 9999999999999999.99)]
-        public double Value { get; set; }
-        public int ExpenseCategory { get; set; } // TODO: enum type
+        public ICollection<NewSingleExpenseViewModel> ExtExpenseItems { get; set; }
 
-        //public SelectList FlatmatesCollection { get; set; }
-        public ICollection<SelectListItem> FlatmatesCollection { get; set; }
-        public int[] DebitorsCollection { get; set; }
-
-        public NewExpenseListViewModel() { }
-
-        public NewExpenseListViewModel(ICollection<User> flatmatesCollection)
+        public NewExpenseListViewModel()
         {
-            //FlatmatesCollection = new SelectList(flatmatesCollection, "UserId", "FirstName");
-            FlatmatesCollection = flatmatesCollection
-                .Select(user => new SelectListItem {
-                    Text = (new StringBuilder())
-                            .Append(user.FirstName)
-                            .Append(" ")
-                            .Append(user.LastName)
-                            .ToString(),
-                    Value = user.UserId.ToString()
-                }).ToList();
+            ExtExpenseItems = new List<NewSingleExpenseViewModel>();
         }
     }
 }

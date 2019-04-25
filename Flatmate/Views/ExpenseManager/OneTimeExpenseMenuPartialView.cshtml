@@ -3,11 +3,14 @@
     <p>Select option</p>
     <div class="stack-panel menu-stack-panel">
         <ul class="horizontal">
-            <li class="expense-manager-menu-item">
-                <a asp-area="" asp-controller="ExpenseManager" asp-action="NewSingleExpense">Add single expense</a>
+            <li>
+                <a class="btn btn-primary expense-manager-menu-item" asp-area="" asp-controller="ExpenseManager" asp-action="NewSingleExpense">Add single expense</a>
             </li>
-            <li class="expense-manager-menu-item">
-                <a asp-area="" asp-controller="ExpenseManager" asp-action="Index">Add expense list</a>
+            <li>
+                <a class="btn btn-primary expense-manager-menu-item" asp-area="" asp-controller="ExpenseManager" asp-action="NewExpenseList">Add expense list</a>
+            </li>
+            <li>
+                <a class="btn btn-primary expense-manager-menu-item" asp-area="" asp-controller="ExpenseManager" asp-action="ViewOneTimeExpenses">Edit expenses</a>
             </li>
         </ul>
     </div>

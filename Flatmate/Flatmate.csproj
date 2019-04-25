@@ -22,11 +22,14 @@
     <Compile Remove="Migrations\20190414095157_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20190418103855_DataSeed1.cs" />
     <Compile Remove="Migrations\20190418103855_DataSeed1.Designer.cs" />
+    <Compile Remove="Migrations\20190419194908_SeedData.cs" />
+    <Compile Remove="Migrations\20190419194908_SeedData.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" PrivateAssets="All" />
@@ -38,6 +41,9 @@
 
   <ItemGroup>
     <Content Update="Views\Dashboard\CredibilityExpenseThumbnailPartialView.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\ExpenseManager\NewRecurringExpense.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\ExpenseManager\NewExpenseList.cshtml">

@@ -3,31 +3,28 @@ using Flatmate.Models.EntityModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Flatmate.ViewModels.ExpenseManager
 {
-    public class NewSingleExpenseViewModel
+    public class NewOrderViewModel
     {
-        public string ExpenseSubject { get; set; }
-        public DateTime Date { get; set; }
-        [CurrencyValidation(ErrorMessage = "Value must be floting value with none decimal places or one or two decimal places preceded by a comma")]
-        public double Value { get; set; }
+        public string OrderSubject { get; set; }
         public ExpenseCategory ExpenseCategory { get; set; }
+        public DateTime Date { get; set; }
 
-        //public SelectList FlatmatesCollection { get; set; }
         public ICollection<SelectListItem> FlatmatesCollection { get; set; }
         public int[] DebitorsCollection { get; set; }
 
-        public NewSingleExpenseViewModel() { }
+        public NewOrderViewModel() { }
 
-        public NewSingleExpenseViewModel(ICollection<User> flatmatesCollection)
+        public NewOrderViewModel(ICollection<User> flatmatesCollection)
         {
             FlatmatesCollection = flatmatesCollection
-                .Select(user => new SelectListItem {
+                .Select(user => new SelectListItem
+                {
                     Text = (new StringBuilder())
                             .Append(user.FirstName)
                             .Append(" ")
