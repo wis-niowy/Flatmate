@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Flatmate.Models.EntityModels;
 using Flatmate.Helpers;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Flatmate.Models
 {
@@ -132,6 +133,25 @@ namespace Flatmate.Models
             {
                 property.Relational().ColumnType = "decimal(18, 2)";
             }
+
+            // column data types conversions
+            modelBuilder
+                .Entity<Expense>()
+                .Property(e => e.ExpenseCategory)
+                .HasConversion(new EnumToStringConverter<ExpenseCategory>());
+            modelBuilder
+                .Entity<Order>()
+                .Property(e => e.ExpenseCategory)
+                .HasConversion(new EnumToStringConverter<ExpenseCategory>());
+            modelBuilder
+                .Entity<RecurringBill>()
+                .Property(e => e.ExpenseCategory)
+                .HasConversion(new EnumToStringConverter<ExpenseCategory>());
+            modelBuilder
+                .Entity<RecurringBill>()
+                .Property(e => e.Frequency)
+                .HasConversion(new EnumToStringConverter<Frequency>());
+
 
             // exclude properties from being mapped to columns
             //modelBuilder.Entity<Expense>()

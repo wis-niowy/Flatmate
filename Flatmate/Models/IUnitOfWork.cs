@@ -11,9 +11,10 @@ namespace Flatmate.Models
         IUserRepository Users { get; }
         ITeamRepository Teams { get; }
         IExpenseRepository Expenses { get; }
-        IScheduledEventRepository ScheduledEvents { get; set; }
-        IRecurringBillRepository RecurringBills { get; set; }
-        IOrderRepository Orders { get; set; }
+        IExpenseDebitorRepository ExpenseDebitor { get; }
+        IScheduledEventRepository ScheduledEvents { get; }
+        IRecurringBillRepository RecurringBills { get; }
+        IOrderRepository Orders { get; }
         int Complete();
         Task<int> CompleteAsync();
     }

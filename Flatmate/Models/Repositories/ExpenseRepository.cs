@@ -56,5 +56,13 @@ namespace Flatmate.Models.Repositories
             //IEnumerable<Expense> expenseList = ;
             return expenseList;
         }
+
+        public Expense GetExpenseWithDebitors(int expenseId)
+        {
+            return FlatmateContext.Expenses
+                .Where(exp => exp.ExpenseId == expenseId)
+                .Include(exp => exp.DebitorsCollection)
+                .FirstOrDefault();
+        }
     }
 }

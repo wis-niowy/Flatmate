@@ -13,9 +13,10 @@ namespace Flatmate.Models
         public IUserRepository Users { get; private set; }
         public ITeamRepository Teams { get; private set; }
         public IExpenseRepository Expenses { get; private set; }
-        public IScheduledEventRepository ScheduledEvents { get; set; }
-        public IRecurringBillRepository RecurringBills { get; set; }
-        public IOrderRepository Orders { get; set; }
+        public IExpenseDebitorRepository ExpenseDebitor { get; private set; }
+        public IScheduledEventRepository ScheduledEvents { get; private set; }
+        public IRecurringBillRepository RecurringBills { get; private set; }
+        public IOrderRepository Orders { get; private set; }
 
         public UnitOfWork(FlatmateContext context)
         {
@@ -23,6 +24,7 @@ namespace Flatmate.Models
             Users = new UserRepository(_context);
             Teams = new TeamRepository(_context);
             Expenses = new ExpenseRepository(_context);
+            ExpenseDebitor = new ExpenseDebitorRepository(_context);
             ScheduledEvents = new ScheduledEventRepository(_context);
             RecurringBills = new RecurringBillRepository(_context);
             Orders = new OrderRepository(_context);

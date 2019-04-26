@@ -17,6 +17,9 @@ namespace Flatmate.Models.IRepositories
         void Add(TEntity entity);
         void AddRange(IEnumerable<TEntity> entities);
 
+        void Update(TEntity entity);
+        void Update(TEntity entity, params string[] propertiesToUpdate);
+
         void Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
     }

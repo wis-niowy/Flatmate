@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Flatmate.Helpers;
 using Flatmate.Models;
 using Flatmate.Models.EntityModels;
 using Flatmate.ViewModels.ExpenseManager;
@@ -102,23 +103,39 @@ namespace Flatmate.Controllers
         public IActionResult EditOneTimeExpense(int expenseId)
         {
             int userId = 1;
+            var expense = _repository.Expenses.GetExpenseWithDebitors(expenseId);
+            var viewModel = _mapper.Map<EditOneTimeExpenseViewModel>(expense);
             var flatmates = _repository.Teams.GetUserFlatmates(userId);
-            var viewModel = new NewSingleExpenseViewModel(flatmates);
+            viewModel.AddFlatmates(flatmates);
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOneTimeExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
+        public async Task<IActionResult> EditOneTimeExpense([Bind("ExpenseId,InitiatorId,ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] EditOneTimeExpenseViewModel expenseViewModel)
         {
             int userId = 1;
             if (ModelState.IsValid)
             {
                 Expense newExpense = _mapper.Map<Expense>(expenseViewModel);
-                newExpense.InitiatorId = userId;
-                _repository.Expenses.Add(newExpense);
+                // temporary loop - TODO: do it in automapper
+                //foreach (var el in newExpense.DebitorsCollection)
+                //{
+                //    el.ExpenseId = newExpense.ExpenseId;
+                //}
+                var oldDebitorsCollection = _repository.ExpenseDebitor.Find(expdeb => expdeb.ExpenseId == newExpense.ExpenseId).ToList();
+                var newDebitorsCollection = newExpense.DebitorsCollection;
+                // manual diff detection is required as ef core will not find elements deleted from DebitorsCollection nav property to remove from database itself
+                var deletedDebitors = oldDebitorsCollection.Except(newDebitorsCollection,
+                    new GenericComparer<ExpenseDebitor>((el1, el2) => el1.DebitorId == el2.DebitorId,
+                                                        el => 100)).ToList();
+                if (deletedDebitors.Count > 0)
+                {
+                    _repository.ExpenseDebitor.RemoveRange(deletedDebitors);
+                }
+                _repository.Expenses.Update(newExpense); // here ExpenseId is set in every DebitorsCollection navigation property element
                 await _repository.CompleteAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ViewOneTimeExpenses));
             }
             return View();
         }

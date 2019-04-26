@@ -41,9 +41,10 @@
                 @Html.DisplayFor(modelItem => item.ExpenseCategory)
             </td>
             <td>
-                <a asp-action="EditOneTimeExpense" asp-route-id="@item.ExpenseId">Edit</a> |
+                <a class="btn btn-default" asp-action="EditOneTimeExpense" asp-route-expenseId="@item.ExpenseId">Edit</a>
+                |
                 @*<a asp-action="Details" asp-route-id="@item.ExpenseId">Details</a> |*@
-                <a asp-action="DeleteOneTimeExpense" asp-route-id="@item.ExpenseId">Delete</a>
+                <a class="btn btn-danger" asp-action="DeleteOneTimeExpense" asp-route-expenseId="@item.ExpenseId">Delete</a>
             </td>
         </tr>
         }

@@ -14,6 +14,7 @@ namespace Flatmate.ViewModels.ExpenseManager
     {
         public int ExpenseId { get; set; }
         public string ExpenseSubject { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         [CurrencyValidation(ErrorMessage = "Value must be floting value with none decimal places or one or two decimal places preceded by a comma")]
         public double Value { get; set; }

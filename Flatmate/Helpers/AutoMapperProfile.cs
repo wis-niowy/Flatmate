@@ -39,6 +39,14 @@ namespace Flatmate.Helpers
             CreateMap<NewSingleExpenseViewModel, Expense>()
                 .ForMember(dest => dest.DebitorsCollection,
                     m => m.MapFrom(src => src.DebitorsCollection));
+            CreateMap<ExpenseDebitor, int>()
+                .ConvertUsing(source => source.DebitorId);
+            CreateMap<Expense, EditOneTimeExpenseViewModel>()
+                .ForMember(dest => dest.DebitorsCollection,
+                    m => m.MapFrom(src => src.DebitorsCollection));
+            CreateMap<EditOneTimeExpenseViewModel, Expense>()
+                .ForMember(dest => dest.DebitorsCollection,
+                    m => m.MapFrom(src => src.DebitorsCollection));
             //CreateMap<ExpenseListItemViewModel, Expense>()
             //    .ForMember(dest => dest.DebitorsCollection,
             //        m => m.MapFrom(src => src.DebitorsCollection));

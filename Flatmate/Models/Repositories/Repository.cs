@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Flatmate.Models.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Flatmate.Models.Repositories
 {
@@ -51,6 +52,35 @@ namespace Flatmate.Models.Repositories
         public void AddRange(IEnumerable<TEntity> entities)
         {
             _entities.AddRange(entities);
+        }
+
+        public void Update(TEntity entity)
+        {
+            _entities.Update(entity);
+            DisplayStates(Context.ChangeTracker.Entries());
+        }
+
+        private static void DisplayStates(IEnumerable<EntityEntry> entries)
+        {
+            foreach (var entry in entries)
+            {
+                System.Diagnostics.Debug.WriteLine($"Entity: {entry.Entity.GetType().Name},State: { entry.State.ToString()}");
+            }
+        }
+
+        public void Update(TEntity entity, params string[] propertiesToUpdate)
+        {
+            // this approach is unable of changing child Entities of root Entity Graph
+            // EntryState can't be set to 'Modified' value for them - use Update method
+            // more: https://www.entityframeworktutorial.net/efcore/working-with-disconnected-entity-graph-ef-core.aspx
+            _entities.Attach(entity);
+            var entry = Context.Entry(entity);
+            foreach (var property in propertiesToUpdate)
+            {
+                var collectionEntry = entry.Collection(property);
+                collectionEntry.IsModified = true;
+            }
+            entry.State = EntityState.Modified;
         }
 
         public void Remove(TEntity entity)

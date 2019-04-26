@@ -77,7 +77,8 @@ namespace Flatmate.Models.Services
                     Value = exp.Value / exp.DebitorsCollection.Count(),
                     ExpenseSubject = exp.ExpenseSubject,
                     ExpenseCategory = exp.ExpenseCategory
-                });
+                })
+                .ToList();
         }
 
         public IEnumerable<ExpenseDebitor> GetUserSpecificCredibilityThumbnailModels(int userId,
@@ -97,7 +98,8 @@ namespace Flatmate.Models.Services
                         DebitorsCollection = expdeb.Expense.DebitorsCollection
                     },
                     Debitor = expdeb.Debitor
-                });
+                })
+                .ToList();
         }
     }
 }

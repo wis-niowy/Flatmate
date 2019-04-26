@@ -10,21 +10,28 @@ using System.Threading.Tasks;
 
 namespace Flatmate.ViewModels.ExpenseManager
 {
-    public class NewRecurringExpenseViewModel
+    public class EditOneTimeExpenseViewModel
     {
-        public string BillSubject { get; set; }
+        public int ExpenseId { get; set; }
+        public int InitiatorId { get; set; }
+        public string ExpenseSubject { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime Date { get; set; }
         [CurrencyValidation(ErrorMessage = "Value must be floting value with none decimal places or one or two decimal places preceded by a comma")]
         public double Value { get; set; }
-        public Frequency Frequency { get; set; }
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime StartDate { get; set; }
+        public ExpenseCategory ExpenseCategory { get; set; }
 
         public ICollection<SelectListItem> FlatmatesCollection { get; set; }
         public int[] DebitorsCollection { get; set; }
 
-        public NewRecurringExpenseViewModel() { }
+        public EditOneTimeExpenseViewModel() { }
 
-        public NewRecurringExpenseViewModel(ICollection<User> flatmatesCollection)
+        public EditOneTimeExpenseViewModel(ICollection<User> flatmatesCollection)
+        {
+            AddFlatmates(flatmatesCollection);
+        }
+
+        public void AddFlatmates(ICollection<User> flatmatesCollection)
         {
             FlatmatesCollection = flatmatesCollection
                 .Select(user => new SelectListItem

@@ -32,7 +32,7 @@ namespace Flatmate
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            
             services.AddAutoMapper();
             services.AddMemoryCache();
             services.AddSession();
@@ -43,7 +43,11 @@ namespace Flatmate
                     options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                 });
             services.AddDbContext<FlatmateContext>
-                (options => options.UseSqlServer(Configuration.GetConnectionString("FlatmateDatabase")));
+                (options => {
+                    options.UseSqlServer(Configuration.GetConnectionString("FlatmateDatabase"));
+                    options.EnableSensitiveDataLogging(true);
+                    //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                });
             //services.AddDbContext<FlatmateContext>
             //    (options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
             services.AddTransient<IUnitOfWork, UnitOfWork>();

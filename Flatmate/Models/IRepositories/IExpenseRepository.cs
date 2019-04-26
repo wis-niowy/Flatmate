@@ -10,5 +10,6 @@ namespace Flatmate.Models.IRepositories
     {
         IEnumerable<Expense> GetUserLiabilities(int userId); // 'I owe'
         IEnumerable<Expense> GetUserCredibilities(int userId); // 'I am owed'
+        Expense GetExpenseWithDebitors(int expenseId);
     }
 }

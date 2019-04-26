@@ -43,8 +43,8 @@ namespace Flatmate.Controllers
             
             var DataModel = new DashboardViewModel
             {
-                UserLiabilities = userLiabSplited.Select(obj => _mapper.Map<LiabilityExpenseViewModel>(obj)),
-                UserCredibilities = userCrediPerDebitor.Select(obj => _mapper.Map<CredibilityExpenseViewModel>(obj)),
+                UserLiabilities = userLiabSplited.Select(obj => _mapper.Map<LiabilityExpenseViewModel>(obj)).ToList(),
+                UserCredibilities = userCrediPerDebitor.Select(obj => _mapper.Map<CredibilityExpenseViewModel>(obj)).ToList(),
                 FlatmateBalances = balances
             };
 
