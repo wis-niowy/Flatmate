@@ -31,8 +31,9 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.48" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +60,8 @@
 
   <ItemGroup>
     <Folder Include="Models\DomainModels\" />
+    <Folder Include="wwwroot\dist\css\" />
+    <Folder Include="wwwroot\dist\js\" />
   </ItemGroup>
 
 </Project>

@@ -38,14 +38,15 @@ namespace Flatmate
             services.AddSession();
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(options => {
+                .AddJsonOptions(options =>
+                {
                     //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                 });
             services.AddDbContext<FlatmateContext>
                 (options => {
-                    options.UseSqlServer(Configuration.GetConnectionString("FlatmateDatabase"));
-                    options.EnableSensitiveDataLogging(true);
+                    options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection"));
+                    //options.EnableSensitiveDataLogging(true);
                     //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
             //services.AddDbContext<FlatmateContext>
