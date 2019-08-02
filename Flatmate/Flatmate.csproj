@@ -8,25 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190414082825_InitialCreate.cs" />
-    <Compile Remove="Migrations\20190414082825_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20190414092437_InitialCreate2.cs" />
-    <Compile Remove="Migrations\20190414092437_InitialCreate2.Designer.cs" />
-    <Compile Remove="Migrations\20190414093207_InitialCreate.cs" />
-    <Compile Remove="Migrations\20190414093207_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20190414093447_InitialCreate.cs" />
-    <Compile Remove="Migrations\20190414093447_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20190414094715_InitialCreate.cs" />
-    <Compile Remove="Migrations\20190414094715_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20190414095157_InitialCreate.cs" />
-    <Compile Remove="Migrations\20190414095157_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20190418103855_DataSeed1.cs" />
-    <Compile Remove="Migrations\20190418103855_DataSeed1.Designer.cs" />
-    <Compile Remove="Migrations\20190419194908_SeedData.cs" />
-    <Compile Remove="Migrations\20190419194908_SeedData.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />

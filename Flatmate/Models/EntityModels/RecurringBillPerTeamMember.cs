@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Flatmate.Models.EntityModels
 {
-    public class RecurringBillDebitor
+    public class RecurringBillPerTeamMember
     {
         public int RecurringBillId { get; set; }
-        public int DebitorId { get; set; }
-
-        // relationships
+        public int UserId { get; set; }
+        public int TeamId { get; set; }
+                
         public RecurringBill RecurringBill { get; set; }
-        public User Debitor { get; set; }
+        public UserTeam TeamMemberAssignment { get; set; }
     }
 }

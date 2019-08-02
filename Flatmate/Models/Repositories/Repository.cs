@@ -24,52 +24,35 @@ namespace Flatmate.Models.Repositories
             _entities = Context.Set<TEntity>();
         }
 
-        public TEntity GetById(int id)
-        {
+        public TEntity GetById(int id) {
             return _entities.Find(id);
         }
-
-        public IEnumerable<TEntity> GetAll()
-        {
+        public IEnumerable<TEntity> GetAll() {
             return _entities.ToList();
         }
-
-        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
-        {
+        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate) {
             return _entities.Where(predicate);
-        }
-
-        //public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
-        //{
-        //    return _entities.SingleOrDefault(predicate);
-        //}
-
-        public void Add(TEntity entity)
-        {
+        }      
+        public void Add(TEntity entity) {
             _entities.Add(entity);
         }
 
-        public void AddRange(IEnumerable<TEntity> entities)
-        {
+        public void AddRange(IEnumerable<TEntity> entities) {
             _entities.AddRange(entities);
         }
 
-        public void Update(TEntity entity)
-        {
+        public void Update(TEntity entity) {
             _entities.Update(entity);
             DisplayStates(Context.ChangeTracker.Entries());
         }
 
-        private static void DisplayStates(IEnumerable<EntityEntry> entries)
-        {
-            foreach (var entry in entries)
-            {
+        private static void DisplayStates(IEnumerable<EntityEntry> entries) {
+            foreach (var entry in entries) {
                 System.Diagnostics.Debug.WriteLine($"Entity: {entry.Entity.GetType().Name},State: { entry.State.ToString()}");
             }
         }
 
-        public void Update(TEntity entity, params string[] propertiesToUpdate)
-        {
+        public void Update(TEntity entity, params string[] propertiesToUpdate) {
             // this approach is unable of changing child Entities of root Entity Graph
             // EntryState can't be set to 'Modified' value for them - use Update method
             // more: https://www.entityframeworktutorial.net/efcore/working-with-disconnected-entity-graph-ef-core.aspx
@@ -83,13 +66,11 @@ namespace Flatmate.Models.Repositories
             entry.State = EntityState.Modified;
         }
 
-        public void Remove(TEntity entity)
-        {
+        public void Remove(TEntity entity) {
             _entities.Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<TEntity> entities)
-        {
+        public void RemoveRange(IEnumerable<TEntity> entities) {
             _entities.RemoveRange(entities);
         }
 

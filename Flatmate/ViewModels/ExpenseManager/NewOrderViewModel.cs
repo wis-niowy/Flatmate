@@ -32,7 +32,7 @@ namespace Flatmate.ViewModels.ExpenseManager
                             .Append(" ")
                             .Append(user.LastName)
                             .ToString(),
-                    Value = user.UserId.ToString()
+                    Value = user.Id.ToString()
                 }).ToList();
         }
     }

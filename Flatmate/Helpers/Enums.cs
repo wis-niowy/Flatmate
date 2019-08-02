@@ -24,4 +24,17 @@ namespace Flatmate.Helpers
         Bill,
         Other
     }
+
+    public enum Unit
+    {
+        Miligram,
+        Gram,
+        Decagram,
+        Kilogram,
+        Tone,
+        Mililiter,
+        Liter,
+        Piece,
+        Other
+    }
 }

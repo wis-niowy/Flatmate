@@ -29,26 +29,26 @@ namespace Flatmate.Controllers
 
         public IActionResult Index()
         {
-            var userId = 1; // id will be extracted from user context
-            var teamId = _repository.Users.GetUserTeamId(userId);
-            var team = _repository.Teams.GetTeamWithMembersById(teamId);
-            var credi = _repository.Expenses.GetUserCredibilities(userId);
-            var liab = _repository.Expenses.GetUserLiabilities(userId);
-            var balances = _service.GetAllFlatmatesBalances(userId,
-                                                           team.UsersCollection,
-                                                           liab,
-                                                           credi);
-            var userCrediPerDebitor = _service.GetUserSpecificCredibilityThumbnailModels(userId, credi);
-            var userLiabSplited = _service.GetUserSpecificLiabilityThumbnailModels(userId, liab);
+            //var userId = 1; // id will be extracted from user context
+            //var teamId = _repository.Users.GetUserTeamId(userId);
+            //var team = _repository.Teams.GetTeamWithMembersById(teamId);
+            //var credi = _repository.Expenses.GetUserCredibilities(userId);
+            //var liab = _repository.Expenses.GetUserLiabilities(userId);
+            //var balances = _service.GetAllFlatmatesBalances(userId,
+            //                                               team.UsersCollection,
+            //                                               liab,
+            //                                               credi);
+            //var userCrediPerDebitor = _service.GetUserSpecificCredibilityThumbnailModels(userId, credi);
+            //var userLiabSplited = _service.GetUserSpecificLiabilityThumbnailModels(userId, liab);
             
-            var DataModel = new DashboardViewModel
-            {
-                UserLiabilities = userLiabSplited.Select(obj => _mapper.Map<LiabilityExpenseViewModel>(obj)).ToList(),
-                UserCredibilities = userCrediPerDebitor.Select(obj => _mapper.Map<CredibilityExpenseViewModel>(obj)).ToList(),
-                FlatmateBalances = balances
-            };
+            //var DataModel = new DashboardViewModel
+            //{
+            //    UserLiabilities = userLiabSplited.Select(obj => _mapper.Map<LiabilityExpenseViewModel>(obj)).ToList(),
+            //    UserCredibilities = userCrediPerDebitor.Select(obj => _mapper.Map<CredibilityExpenseViewModel>(obj)).ToList(),
+            //    FlatmateBalances = balances
+            //};
 
-            return View(DataModel);
+            return View();
         }
 
         

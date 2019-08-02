@@ -25,14 +25,14 @@ namespace Flatmate.Controllers
             return View();
         }
 
-        public IActionResult Events()
-        {
-            int userId = 1;
-            var events = _repository.ScheduledEvents.GetAllEvents(userId);
-            var jsonResult = Json(events.ToList());
-            //var str = JsonConvert.SerializeObject(events, Formatting.Indented);
-            //String json = new JsonSerializer().Serialize(jsonResult.Value)
-            return jsonResult;
-        }
+        //public IActionResult Events()
+        //{
+        //    //int userId = 1;
+        //    //var events = _repository.ScheduledEvents.GetAllEvents(userId);
+        //    //var jsonResult = Json(events.ToList());
+        //    ////var str = JsonConvert.SerializeObject(events, Formatting.Indented);
+        //    ////String json = new JsonSerializer().Serialize(jsonResult.Value)
+        //    //return jsonResult;
+        //}
     }
 }

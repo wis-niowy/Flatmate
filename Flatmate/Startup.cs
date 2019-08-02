@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Flatmate.Models;
 using AutoMapper;
+using Flatmate.Data;
 
 namespace Flatmate
 {
@@ -40,17 +41,12 @@ namespace Flatmate
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options =>
                 {
-                    //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                 });
             services.AddDbContext<FlatmateContext>
                 (options => {
                     options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection"));
-                    //options.EnableSensitiveDataLogging(true);
-                    //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
-            //services.AddDbContext<FlatmateContext>
-            //    (options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
@@ -59,7 +55,6 @@ namespace Flatmate
         {
             if (env.IsDevelopment())
             {
-                //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -70,7 +65,6 @@ namespace Flatmate
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            // app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

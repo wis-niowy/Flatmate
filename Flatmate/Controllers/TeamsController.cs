@@ -5,25 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Flatmate.Models;
-using Flatmate.Models.EntityModels;
 using Flatmate.Data;
+using Flatmate.Models.EntityModels;
 
 namespace Flatmate.Controllers
 {
-    public class UsersController : Controller
+    public class TeamsController : Controller
     {
         private readonly FlatmateContext _context;
 
-        public UsersController(FlatmateContext context) => _context = context;
-
-        // GET: Users
-        public async Task<IActionResult> Index()
+        public TeamsController(FlatmateContext context)
         {
-            return View(await _context.Users.ToListAsync());
+            _context = context;
         }
 
-        // GET: Users/Details/5
+        // GET: Teams
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Teams.ToListAsync());
+        }
+
+        // GET: Teams/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -31,44 +33,39 @@ namespace Flatmate.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var team = await _context.Teams
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (team == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(team);
         }
 
-        // GET: Users/Create
+        // GET: Teams/Create
         public IActionResult Create()
         {
-            //_context.Users.Add(new Models.User() {
-            //    FirstName = "Janusz",
-            //    LastName = "Tracz",
-            //    EmailAddress = "janusz.tracz@gmail.com"
-            //});
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Teams/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,EmailAddress")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Team team)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                _context.Add(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(team);
         }
 
-        // GET: Users/Edit/5
+        // GET: Teams/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +73,22 @@ namespace Flatmate.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var team = await _context.Teams.FindAsync(id);
+            if (team == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(team);
         }
 
-        // POST: Users/Edit/5
+        // POST: Teams/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,EmailAddress")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Team team)
         {
-            if (id != user.Id)
+            if (id != team.Id)
             {
                 return NotFound();
             }
@@ -100,12 +97,12 @@ namespace Flatmate.Controllers
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(team);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
+                    if (!TeamExists(team.Id))
                     {
                         return NotFound();
                     }
@@ -116,10 +113,10 @@ namespace Flatmate.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(team);
         }
 
-        // GET: Users/Delete/5
+        // GET: Teams/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,30 +124,30 @@ namespace Flatmate.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var team = await _context.Teams
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (team == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(team);
         }
 
-        // POST: Users/Delete/5
+        // POST: Teams/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Users.Remove(user);
+            var team = await _context.Teams.FindAsync(id);
+            _context.Teams.Remove(team);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool TeamExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Teams.Any(e => e.Id == id);
         }
     }
 }
