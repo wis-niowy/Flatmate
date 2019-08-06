@@ -25,6 +25,11 @@
         "umd/popper.js.map",
         "umd/popper.js"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "mdbootstrap@4.8.7",
+      "destination": "wwwroot/lib/mdbootstrap/"
     }
   ]
 }

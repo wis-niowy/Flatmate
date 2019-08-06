@@ -1,8 +1,4 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
+﻿
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
@@ -112,4 +108,14 @@ li:hover .expense-thumbnail {
 
 .menu-item {
     white-space: pre-wrap; /* css-3 */
+}
+
+.rendered-body-margin {
+    margin: 5rem!important;
+}
+
+@media screen and (min-width: 768px){
+    .card-row{
+        margin: 0 1.8rem 0 1.8rem;
+    }
 }
