@@ -1,0 +1,47 @@
+﻿@model Flatmate.ViewModels.Dashboard.TeamCreationData
+
+<!-- Modal: modalCart -->
+
+<div class="modal fade" id="modalTeamCreate" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded">
+            <!--Header-->
+            <div class="h4 modal-header justify-content-center blue">
+                <i class="fas fa-angle-double-left mr-2 text-white"></i>
+                Create your team!
+                <i class="fas fa-angle-double-right ml-2 text-white"></i>
+            </div>
+            <form id="myForm" asp-action="Create">
+                <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="TeamName" class="control-label">Choose your team name:</label>
+                            <input asp-for="TeamName" class="form-control" placeholder="Your team name..." />
+                            <span asp-validation-for="TeamName" class="text-danger"></span>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <label class="control-label mb-3">Invite new members: </label>
+                            @{
+                                var emailNumber = 4;
+                                for (int i = 0; i < emailNumber; i++)
+                                {
+                                    <!--TODO: Add validation for Email address instead of Name-->
+
+                                    <div class="justify-content-between mb-2">
+                                        <input asp-for="InvitationEmails[i]" class="form-control" placeholder="Email address..." />
+                                        <span asp-validation-for="InvitationEmails[i]" class="text-danger"></span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                        <button class="btn btn-dark" data-dismiss="modal">Close</button>
+                        <button id="btnSubmit" type="submit" asp-controller="Teams" asp-action="Create" class="btn btn-dark">Ready!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

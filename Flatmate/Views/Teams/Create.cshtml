@@ -1,34 +1,48 @@
 ﻿@model Flatmate.Models.EntityModels.Team
 
-@{
-    ViewData["Title"] = "Create";
-}
+<div class="row row-margin">
+    <div class="col-lg-6 col-xl-4 col-md-12 mb-4 mt-5">
+        <div class="card">
+            <div class="card-header text-center">
+                <i class="fas fa-angle-double-left"></i>
+                <strong>Create your team!</strong>
+                <i class="fas fa-angle-double-right"></i>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Choose your team name:</label>
+                        <input asp-for="Name" class="form-control" placeholder="Your team name..." />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <label class="control-label mb-3">Invite new members: </label>
+                        @{
+                            var emailNumber = 4;
+                            for (int i = 0; i < emailNumber; i++)
+                            {
+                                <!--TODO: Add validation for Email address instead of Name-->
 
-<div class="mt-5 ml-4">
-    <h4>New team >>></h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label">Choose your team name</label>
-                    <input asp-for="Name" class="form-control" placeholder="Your team name..." />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Ready!" class="btn btn-dark float-right" />
-                </div>
-            </form>
+                                <div class="justify-content-between mb-2">
+                                    <input type="email" class="form-control" placeholder="Email address..." />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="row justify-content-between m-2">
+                        <button class="btn btn-dark" asp-action="Index">Back to List</button>
+                        <button type="submit" class="btn btn-dark">Ready!</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-
-
-    <div>
-        <a asp-action="Index">Back to List</a>
     </div>
 </div>
 
 @section Scripts {
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

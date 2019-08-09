@@ -1,0 +1,58 @@
+﻿
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="col-lg-8 mb-4 mt-5">
+
+    <!--Card-->
+    <div class="card card-bigger-sm">
+
+        <!--Card header-->
+        <div class="h6 card-header text-center purple lighten-3">
+            <i class="fas fa-angle-double-left text-white"></i>
+            <strong>Upcoming events</strong>
+            <i class="fas fa-angle-double-right text-white"></i>
+
+        </div>
+
+        <!--Card content-->
+        <div class="card-body">
+            <!--Title-->
+            <div class="row">
+
+                <div class="col-sm-7 mx-1 overflow-auto dashboard-card-big-content">
+                    @for (int j = 0; j < 4; j++)
+                    {
+                        <div class="toast animated fadeIn" style="opacity: 1">
+                            <div class="toast-header red lighten-5">
+                                <strong class="mr-auto">Event Title</strong>
+                                <small>Tomorrow</small>
+                            </div>
+                            <div class="toast-body">
+                                Event Description.
+                                <br />
+                                Participants: User1, User2
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="col-sm-4 mr-2">
+                    <label class="text-center dashboard-card-font">Choose period: </label>
+                    <select class="mx-3 mb-1 browser-default custom-select">
+                        <option selected>3 days</option>
+                        <option value="1">1 Week</option>
+                        <option value="1">2 Weeks</option>
+                        <option value="2">3 Weeks</option>
+                    </select>
+                    <button type="button" class="btn blue lighten-2 btn-block p-2 m-2 dashboard-card-font">
+                        Check your <br /> calendar
+                        <i class="fas fa-angle-double-right"></i>
+                        <span class="sr-only">unread messages</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--/.Card-->
+</div>

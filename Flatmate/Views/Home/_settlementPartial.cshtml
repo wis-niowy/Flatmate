@@ -1,0 +1,87 @@
+﻿
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="col-lg-8 mb-4">
+
+    <!--Card-->
+    <div class="card card-size-400">
+
+        <!--Card header-->
+        <div class="h6 card-header text-center green lighten-3">
+            <i class="fas fa-angle-double-left text-white"></i>
+            <strong>Settlement</strong>
+            <i class="fas fa-angle-double-right text-white"></i>
+        </div>
+
+        <!--Card content-->
+        <div class="card-body">
+            <div>
+                <div class="btn-group nav blue lighten-2" role="tablist" id="myTab">
+                    <button type="button" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                            class="btn active" aria-selected="true">
+                        I owe
+                    </button>
+                    <button type="button" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                            class="btn" aria-selected="false">
+                        They owe me
+                    </button>
+                    @*TODO: remove if You dont like it *@
+                    @*<button type="button" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                            class="btn" aria-selected="false">
+                        Pretty trees &lt3
+                    </button>*@
+                </div>
+                <div class="tab-content mt-3" id="myTabContent">
+                    <div class="tab-pane fade show active overflow-auto settlement-table-wrapper" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <table class="w-100 table-sm table-striped">
+                            <tbody>
+                                @for (int i = 0; i < 7; i++)
+                                {
+                                <tr>
+                                    <td>
+                                        <small>For:</small>
+                                        <img class="rounded-circle" style="height:30px;width:30px" src="~/images/Dashboard/settlement/avatar.png" />
+                                    </td>
+                                    <td>
+                                        UserName
+                                        <br/>
+                                        <i><small>GroupName</small></i>
+                                    </td>
+                                    <td><small>2019/07/08</small></td>
+                                    <td>9.99 PLN</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade overflow-auto settlement-table-wrapper" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <table class="w-100 table-sm table-striped">
+                            <tbody>
+                                @for (int i = 0; i < 7; i++)
+                                {
+                                <tr>
+                                    <td>
+                                        <small>From:</small>
+                                        <img class="rounded-circle" style="height:30px;width:30px" src="~/images/Dashboard/settlement/avatar.png" />
+                                    </td>
+                                    <td>
+                                        UserName
+                                        <br />
+                                        <i><small>GroupName</small></i>
+                                    </td>
+                                    <td><small>2019/07/08</small></td>
+                                    <td>4.99 PLN</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @*<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <img class="rounded mw-100 mh-100 shadow" src="~/images/Dashboard/settlement/winter-landscape.jpg" />
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.Card-->
+</div>

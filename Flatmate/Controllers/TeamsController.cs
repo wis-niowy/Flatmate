@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Flatmate.Data;
 using Flatmate.Models.EntityModels;
+using Flatmate.ViewModels.Dashboard;
 
 namespace Flatmate.Controllers
 {
@@ -20,9 +21,10 @@ namespace Flatmate.Controllers
         }
 
         // GET: Teams
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Teams.ToListAsync());
+            //var teams = await _context.Teams.ToListAsync();
+            return View();
         }
 
         // GET: Teams/Details/5
@@ -46,7 +48,7 @@ namespace Flatmate.Controllers
         // GET: Teams/Create
         public IActionResult Create()
         {
-            return View();
+            return RedirectToAction(nameof(Create));
         }
 
         // POST: Teams/Create
@@ -54,15 +56,19 @@ namespace Flatmate.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Team team)
+        public async Task<IActionResult> Create([Bind("TeamName", "InvitationEmails")] TeamCreationData teamCreationData)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(team);
+                var team = new Team
+                {
+                    Name = teamCreationData.TeamName
+                };
+                _context.Teams.Add(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(team);
+            return View(teamCreationData);
         }
 
         // GET: Teams/Edit/5

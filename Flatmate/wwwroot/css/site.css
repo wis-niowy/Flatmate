@@ -114,8 +114,85 @@ li:hover .expense-thumbnail {
     margin: 5rem!important;
 }
 
-@media screen and (min-width: 768px){
-    .card-row{
-        margin: 0 1.8rem 0 1.8rem;
+/* Custom Bootstrap 4 CSS */
+
+.dashboard-card-font {
+    font-size: 12px;
+}
+
+@media screen and (min-width: 768px) {
+    .row-margin {
+        margin: 0 1.8rem 0 3rem;
     }
 }
+
+@media screen and (min-width: 576px) {
+    .card-bigger-sm {
+        height: 400px;
+    }
+    
+    .dashboard-card-big-content {
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .card-bigger-sm {
+        height: 450px;
+    }
+    .dashboard-card-big-content {
+        height: 250px;
+    }
+}
+
+.card-size-400 {
+    height: 400px;
+}
+
+.dashboard-card-medium-content {
+    height: 250px;
+}
+
+.button-35 {
+    width: 35px!important;
+    height: 35px;
+}
+
+@media screen and (min-height: 620px) {
+    .left-nav-sizing {
+        height: 90% !important;
+    }
+    .left-nav-sizing-inner {
+        height: 90% !important;
+        margin-bottom: 1rem !important;
+        margin-top: 1rem !important;
+    }
+}
+
+@media screen and (min-height: 450px) and (max-height: 619px) {
+    .left-nav-sizing {
+        height: 85% !important;
+    }
+    .left-nav-sizing-inner {
+        height: 85% !important;
+        margin-bottom: 1.5rem !important;
+        margin-top: 1.5rem !important;
+    }
+}
+
+@media screen and (max-height: 449px) {
+    .left-nav-sizing {
+        height: 80% !important;
+    }
+    .left-nav-sizing-inner {
+        height: 80% !important;
+        margin-bottom: 1.5rem !important;
+        margin-top: 1.5rem !important;
+    }
+}
+
+.settlement-table-wrapper {
+    height: 250px;
+}
+
+/* Custom Bootstrap 4 CSS end */

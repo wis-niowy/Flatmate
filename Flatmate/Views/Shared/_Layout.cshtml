@@ -22,8 +22,11 @@
 </head>
 <body>
     <header class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar blue">
-        <div class="bb"></div>
-        <a class="navbar-brand ml-3" asp-area="" asp-controller="Home" asp-action="Index"><strong>Flatmate</strong></a>
+        <a class="navbar-brand ml-3" asp-area="" asp-controller="Home" asp-action="Index">
+            <i class="fas fa-angle-double-left"></i>
+            <strong class="text-dark">Flatmate</strong>
+            <i class="fas fa-angle-double-right"></i>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -49,58 +52,61 @@
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item">
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-info-circle text-dark"></i>
                         Help!
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="far fa-bell text-dark"></i>
                         NTFNs
+                        <span class="badge badge-danger notification-badge">4</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user text-dark"></i>
                         Profile
                     </a>
+                    <div class="dropdown-menu dropdown-default mr-5" aria-labelledby="navbarDropdownMenuLink-333">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="#">Settings</a>
+                        <a class="dropdown-item" href="#">Logout</a>
+                    </div>
                 </li>
-                @{
-                    var socialIconNames = new string[] { "fa-facebook-f", "fa-twitter", "fa-instagram" };
-                    for (int i = 0; i < socialIconNames.Length; i++)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link"><i class="fab @socialIconNames[i]"></i></a>
-                        </li>
-                    }
-                }
             </ul>
         </div>
     </header>
     <div class="container-fluid">
         <div class="row">
-            <nav class="d-none d-md-block border-right sidebar p-2 stylish-color vh-100 position-fixed my-5">
-                <div class="sidebar">
+            <nav class="d-none d-md-block border-right sidebar p-1 stylish-color left-nav-sizing overflow-auto position-fixed my-5">
+                <div class="sidebar left-nav-sizing-inner overflow-auto">
                     <ul class="nav flex-column overflow-auto">
-                        @for (int i = 0; i < 5; i++)
+                        @for (int i = 0; i < 7; i++)
                         {
                             var groupName = "G" + i.ToString();
                             <li class="nav-item text-center">
                                 <div class="p-1 mb-1 mt-1">
                                     <a class="nav-link p-1 mt-2 mb-2 border-animation" href="#">
-                                        <div class="border-animation__inner pt-4">@groupName</div>
+                                        <div class="border-animation__inner pt-4" title="Show group details!">@groupName</div>
                                     </a>
                                 </div>
                             </li>
                         }
-                        <li class="nav-item text-center">
+                        @* TODO: remove when new group button added*@
+
+                        @*<li class="nav-item text-center">
                             <div class="p-1 mb-2 mt-2">
-                                <a asp-area="" asp-controller="Teams" asp-action="Create" class="nav-link p-1 mt-2 mb-2">
+                                <a class="nav-link p-1 mt-2 mb-2" data-toggle="modal" data-target="#modalTeamCreate">
                                     <img src="~/images/Dashboard/baseline-add_circle_outline-24px.svg" class="w-50 mb-2 mt-2" />
                                 </a>
                             </div>
-                        </li>
+                        </li>*@
                     </ul>
                 </div>
             </nav>
-            <div class="px-5 m-5">
+            <div class="w-100 px-4 m-5">
                 @RenderBody()
             </div>
         </div>
@@ -109,14 +115,22 @@
 
             <!-- Copyright -->
             <div class="footer-copyright text-center py-3">
-                © 2019 Copyright:
-                <a href="https://mdbootstrap.com/education/bootstrap/"> Flatmate.com</a>
+                <a class="pr-3 border-right border-white" href="https://mdbootstrap.com/education/bootstrap/"> Flatmate.com</a>
+                @{
+                    var socialIconNames = new string[] { "fa-facebook-f", "fa-twitter", "fa-instagram" };
+                    for (int i = 0; i < socialIconNames.Length; i++)
+                    {
+                        <a class="mx-2" href="#"><i class="fab @socialIconNames[i]"></i></a>
+                    }
+                }
             </div>
             <!-- Copyright -->
 
         </footer>
         <!-- Footer -->
     </div>
+
+    <partial name="~/Views/Teams/_createTeamPartial.cshtml" />
 
     <environment include="Development">
         <script src="~/lib/jquery/jquery.js"></script>
