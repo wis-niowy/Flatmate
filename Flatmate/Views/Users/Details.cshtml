@@ -1,36 +1,70 @@
 ﻿@model Flatmate.Models.EntityModels.User
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h2>Details</h2>
-
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EmailAddress)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EmailAddress)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="m-md-5 m-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title pl-2"><strong>Profil</strong></h5>
+            <hr />
+            <img class="rounded-circle float-right border" style="border-color:black;border-width:5px;height:70px;width:70px;margin-top:-3.5rem;margin-right:2rem" src="~/images/Dashboard/settlement/avatar.png" />
+            <div id="personalInformation" class="mb-3">
+                <div class="row pl-2">
+                    <div class="col-md-12 mb-3">
+                        <i>Personal information</i>
+                        @*TODO: change id below for the sent one*@
+                        <a asp-action="Edit" asp-controller="Users" asp-route-id="1"><i class="fas fa-pencil-alt ml-2" title="Edit"></i></a>
+                    </div>
+                </div>
+                <div class="row pl-2">
+                    <div class="col-md-4">
+                        <div class="d-inline">
+                            <small><b>@Html.DisplayNameFor(model => model.FullName)</b></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-inline">
+                            @Html.DisplayFor(model => model.FullName)
+                        </div>
+                    </div>
+                </div>
+                <div class="row pl-2">
+                    <div class="col-md-4">
+                        <div class="d-inline">
+                            <small><b>@Html.DisplayNameFor(model => model.EmailAddress)</b></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-inline">
+                            @Html.DisplayFor(model => model.EmailAddress)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div id="groupsInformation" class="mb-3">
+                <div class="row pl-2">
+                    <div class="col-md-12 mb-3">
+                        @*TODO: change id below for the sent one*@
+                        <a asp-action="GroupDetails" asp-controller="Users" asp-route-id="1" title="Group details">
+                            <i>My groups</i>
+                        </a>
+                    </div>
+                </div>
+                @foreach(var teamAssignment in Model.TeamAssignments)
+                {
+                    <div class="row pl-2">
+                        <div class="col-md-4">
+                            <div class="d-inline">
+                                <small><b>@Html.DisplayNameFor(model => teamAssignment.Team.Name)</b></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-inline">
+                                @Html.DisplayFor(model => teamAssignment.Team.Name)
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

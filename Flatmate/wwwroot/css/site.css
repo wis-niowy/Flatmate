@@ -195,4 +195,14 @@ li:hover .expense-thumbnail {
     height: 250px;
 }
 
+@media (min-height: 992px) {
+    .nav-dropdown-position-right {
+        left: -2.5rem !important;
+    }
+}
+
+.btn-padding-sm {
+    padding: 5px!important;
+}
+
 /* Custom Bootstrap 4 CSS end */

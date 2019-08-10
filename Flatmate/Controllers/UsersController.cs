@@ -32,7 +32,33 @@ namespace Flatmate.Controllers
             }
 
             var user = await _context.Users
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .Include(u => u.TeamAssignments)
+                    .ThenInclude(ta => ta.Team)
+                        .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        // GET: Users/GroupDetails/5
+        public async Task<IActionResult> GroupDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .Include(u => u.TeamAssignments)
+                    .ThenInclude(ta => ta.Team)
+                        .ThenInclude(t => t.UserAssignments)
+                            .ThenInclude(ua => ua.User)                        
+                .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound();

@@ -7,7 +7,7 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/mdbootstrap/css/mdb.min.css">
+        <link rel="stylesheet" href="~/lib/mdbootstrap/css/mdb.min.css"/>
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/scss/custom.min.css" />
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -49,7 +49,7 @@
                     </a>
                 </li>
             </ul>
-            <ul class="navbar-nav ml-auto nav-flex-icons">
+            <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
                         <i class="fas fa-info-circle text-dark"></i>
@@ -69,8 +69,9 @@
                         <i class="far fa-user text-dark"></i>
                         Profile
                     </a>
-                    <div class="dropdown-menu dropdown-default mr-5" aria-labelledby="navbarDropdownMenuLink-333">
-                        <a class="dropdown-item" href="#">Profile</a>
+                    <div class="dropdown-menu dropdown-default nav-dropdown-position-right" aria-labelledby="navbarDropdownMenuLink-333">
+                        @*TODO: zmienić id poniżej na id zalogowanego użytkownika *@
+                        <a class="dropdown-item" asp-action="Details" asp-controller="Users" asp-route-id="1">Profile</a>
                         <a class="dropdown-item" href="#">Settings</a>
                         <a class="dropdown-item" href="#">Logout</a>
                     </div>
@@ -80,32 +81,32 @@
     </header>
     <div class="container-fluid">
         <div class="row">
-            <nav class="d-none d-md-block border-right sidebar p-1 stylish-color left-nav-sizing overflow-auto position-fixed my-5">
-                <div class="sidebar left-nav-sizing-inner overflow-auto">
-                    <ul class="nav flex-column overflow-auto">
-                        @for (int i = 0; i < 7; i++)
-                        {
-                            var groupName = "G" + i.ToString();
-                            <li class="nav-item text-center">
-                                <div class="p-1 mb-1 mt-1">
-                                    <a class="nav-link p-1 mt-2 mb-2 border-animation" href="#">
-                                        <div class="border-animation__inner pt-4" title="Show group details!">@groupName</div>
-                                    </a>
-                                </div>
-                            </li>
-                        }
-                        @* TODO: remove when new group button added*@
+                <nav id="" class="d-none d-md-block border-right sidebar p-1 stylish-color left-nav-sizing overflow-auto position-fixed my-5">
+                    <div class="sidebar left-nav-sizing-inner overflow-auto">
+                        <ul class="nav flex-column overflow-auto">
+                            @for (int i = 0; i < 7; i++)
+                            {
+                                var groupName = "G" + i.ToString();
+                                <li class="nav-item text-center">
+                                    <div class="p-1 mb-1 mt-1">
+                                        <a class="nav-link p-1 mt-2 mb-2 border-animation" href="#">
+                                            <div class="border-animation__inner pt-4" title="Show group details!">@groupName</div>
+                                        </a>
+                                    </div>
+                                </li>
+                            }
+                            @* TODO: remove when new group button added*@
 
-                        @*<li class="nav-item text-center">
+                            @*<li class="nav-item text-center">
                             <div class="p-1 mb-2 mt-2">
                                 <a class="nav-link p-1 mt-2 mb-2" data-toggle="modal" data-target="#modalTeamCreate">
                                     <img src="~/images/Dashboard/baseline-add_circle_outline-24px.svg" class="w-50 mb-2 mt-2" />
                                 </a>
                             </div>
                         </li>*@
-                    </ul>
-                </div>
-            </nav>
+                        </ul>
+                    </div>
+                </nav>
             <div class="w-100 px-4 m-5">
                 @RenderBody()
             </div>
@@ -130,7 +131,7 @@
         <!-- Footer -->
     </div>
 
-    <partial name="~/Views/Teams/_createTeamPartial.cshtml" />
+    @*<partial name="~/Views/Teams/_createTeamPartial.cshtml" />*@
 
     <environment include="Development">
         <script src="~/lib/jquery/jquery.js"></script>

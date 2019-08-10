@@ -1,0 +1,67 @@
+﻿@model Flatmate.Models.EntityModels.User
+
+<div class="m-md-5 m-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title pl-2"><strong>My groups</strong></h5>
+            <hr />
+            <img class="rounded-circle float-right border" style="border-color:black;border-width:5px;height:70px;width:70px;margin-top:-3.5rem;margin-right:2rem" src="~/images/Dashboard/group.png" />
+            <div id="groupInformation" class="my-5">
+                @foreach (var teamAssignment in Model.TeamAssignments)
+                {
+                    <div class="row pl-2 my-4">
+                        <div class="col-md-2 mb-2">
+                            <div>
+                                <small><b>@Html.DisplayNameFor(model => teamAssignment.Team.Name)</b></small>
+                                <br />
+                                @Html.DisplayFor(model => teamAssignment.Team.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-1 mb-2">
+                            <button type="button" class="btn bg-light btn-outline-light-blue btn-rounded btn-sm p-2" title="Edit group name"
+                                    data-toggle="modal" data-target="#modalTeamNameChange">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn bg-light btn-outline-light-blue btn-rounded btn-sm p-2" title="Check details">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button type="button" class="btn bg-light btn-outline-light-blue btn-rounded btn-sm p-2" title="Invite new members!"
+                                    data-toggle="modal" data-target="#modalNewMembersInvite">
+                                <i class="fas fa-plus"></i>
+                            </button>
+
+                        </div>
+                        <div class="col-md-8">
+                            @foreach (var userAssignment in teamAssignment.Team.UserAssignments)
+                            {
+                                <button class="d-inline-block btn bg-light disabled btn-padding-sm">
+                                    <img class="rounded-circle" style="height:30px;width:30px" src="~/images/Dashboard/settlement/avatar.png" />
+                                    @Html.DisplayFor(ua => userAssignment.User.FullName)
+                                </button>
+                            }
+
+                            @*<table class="table-sm table-borderless">
+                                @foreach (var userAssignment in teamAssignment.Team.UserAssignments)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img class="rounded-circle" style="height:30px;width:30px" src="~/images/Dashboard/settlement/avatar.png" />
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(ua => userAssignment.User.FullName)
+                                        </td>
+                                    </tr>
+                                }
+                                </table>*@
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_changeTeamNamePartial" />
+<partial name="../Teams/_inviteTeamMembersPartial" />
+
+

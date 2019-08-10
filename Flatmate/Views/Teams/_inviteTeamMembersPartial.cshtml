@@ -1,0 +1,41 @@
+﻿@*TODO: change model to new viewModel when created*@
+@model Flatmate.Models.EntityModels.User
+<!-- Modal: modalCart -->
+
+<div class="modal fade" id="modalNewMembersInvite" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded">
+            <!--Header-->
+            <div class="h5 modal-header justify-content-center blue">
+                <i class="fas fa-angle-double-left mr-2 text-white"></i>
+                Invite new members!
+                <i class="fas fa-angle-double-right ml-2 text-white"></i>
+            </div>
+            <form id="myForm">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label class="control-label mb-3">Invite new members: </label>
+                        @{
+                            var emailNumber = 4;
+                            for (int i = 0; i < emailNumber; i++)
+                            {
+                                <!--TODO: Add asp-for classes after model change-->
+
+                                <div class="justify-content-between mb-2">
+                                    <input class="form-control" placeholder="Email address..." />
+                                    <span class="text-danger"></span>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button id="btnSubmit" type="submit" asp-controller="Teams" asp-action="Create" class="btn btn-dark">Ready!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
