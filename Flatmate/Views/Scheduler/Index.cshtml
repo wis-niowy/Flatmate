@@ -1,177 +1,93 @@
 ﻿
-@{
-    ViewData["Title"] = "Index";
-}
+<!--Top Table UI-->
+<!--Card-->
+<div class="m-5 margin-left-0-max-sm card">
+    <!--Card header-->
+    <div class="view view-cascade py-3 blue lighten-2 mx-4 d-flex justify-content-between align-items-center" style="margin-top:-1rem">
+        <div>
+            <button type="button" title="Previous week" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2" onclick="shiftDates(false)">
+                <i class="fas fa-angle-double-left mt-0"></i>
+            </button>
 
-@*<h2>Index</h2>
-    <div id="calendar"></div>
+            <button type="button" title="Next week" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2" onclick="shiftDates(true)">
+                <i class="fas fa-angle-double-right mt-0"></i>
+            </button>
+        </div>
+        <a href="" class="white-text mx-3">Calendar</a>
+        <div>
+            <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
+                    data-toggle="modal" data-target="#exampleModal">
+                <i class="fas fa-plus mt-0"></i>
+            </button>
 
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><span id="eventTitle"></span></h4>
-                </div>
-                <div class="modal-body">
-                    <p id="pDetails"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">Recipient:</label>
+                                    <input type="text" class="form-control" id="recipient-name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">Message:</label>
+                                    <textarea class="form-control" id="message-text"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Send message</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
+                <i class="fas fa-info-circle mt-0"></i>
+            </button>
+
         </div>
     </div>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css">
-    <link rel="stylesheet" media="print" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css">
-
-    @section Scripts {
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
-
-        <script>
-            $(document).ready(function () {
-                var events = [];
-                $.ajax({
-                    type: "GET",
-                    url: "/Scheduler/Events",
-                    success: function (data) {
-                        $.each(data, function (i, v) {
-                            events.push({
-                                title: v.Title,
-                                description: v.Description,
-                                start: moment(v.StartDate),
-                                end: v.End != null ? moment(v.EndDate) : null,
-                                allDay: v.IsFullDay
-                            });
-                        })
-
-                        GenerateCalendar(events);
-                    },
-                    error: function (error) {
-                        aler('failed');
-                        //var err = JSON.parse(xhr.responseText);
-                        //alert('failed ' + err.Message);
-                    }
-                })
-
-                function GenerateCalendar(events) {
-                    $('#calendar').fullCalendar('destroy');
-                    $('#calendar').fullCalendar({
-                        contentHeight: 400,
-                        defaultDate: new Date(),
-                        timeFormat: 'h(:mm)a',
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,basicWeek,basicDay,agenda'
-                        },
-                        eventLimit: true,
-                        eventColor: '#378006',
-                        events: events,
-                        eventClick: function (calEvent, jsEvent, view) {
-                            $('#myModal #eventTitle').text(calEvent.title);
-                            var $description = $('<div/>');
-                            $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
-                            if (calEvent.end != null) {
-                                $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
-                            }
-                            $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
-                            $('#myModal #pDetails').empty().html($description);
-
-                            $('#myModal').modal();
-                        }
-                    })
-                }
-            })
-        </script>
-    }*@
-
-<h2>Index</h2>
-<div id="calendar"></div>
-
-<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><span id="eventTitle"></span></h4>
-            </div>
-            <div class="modal-body">
-                <p id="pDetails"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+    <!--/Card header-->
+    <!--Card content-->
+    <div class="card-body">
+        <div class="table-responsive text-nowrap">
+            <table id="calendarTable" class="table">
+                <thead>
+                    <tr id="dateRow"></tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
         </div>
+        <hr class="my-0">
+        <!--Bottom Table UI-->
     </div>
 </div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" />
-<link rel="stylesheet" media="print" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" />
+@*<partial name="_createNewEventPartial" />*@
 
-@section Scripts{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            var events = [];
-            $.ajax({
-                type: "GET",
-                url: "/Scheduler/Events",
-                success: function (data) {
-                    console.log("succss: " + Object.keys(data));
-                    for (var obj in Object.keys(data)) {
-                        console.log(obj);
-                    }
-                    $.each(data, function (i, v) {
-                        events.push({
-                            title: v.Subject,
-                            description: v.Description,
-                            start: moment(v.Start).format(),
-                            end: v.End != null ? moment(v.End).format() : null,
-                            color: v.ThemeColor,
-                            allDay: v.IsFullDay
-                        });
-                    })
+<script type="text/javascript" src="~/lib/moment.js/moment.min.js"></script>
+<script type="text/javascript" src="~/lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="~/lib/popper.js/umd/popper.js"></script>
+<script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="~/js/site.js"></script>
 
-                    Generatecalendar(events);
-                },
-                error: function (error) {
-                    alert('failed');
-                }
-            })
-
-            function Generatecalendar(events) {
-                $('#calendar').fullCalendar('destroy');
-                $('#calendar').fullCalendar({
-                    contentHeight: 400,
-                    defaultDate: new Date(),
-                    timeFormat: 'h(:mm)a',
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,basicWeek,basicDay,agenda'
-                    },
-                    eventLimit: true,
-                    eventColor: '#378006',
-                    events: events,
-                    eventClick: function (calEvent, jsEvent, view) {
-                        $('#myModal #eventTitle').text(calEvent.title);
-                        var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
-                        if (calEvent.end != null) {
-                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
-                        }
-                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
-                        $('#myModal #pDetails').empty().html($description);
-
-                        $('#myModal').modal();
-                    }
-                })
-            }
-        })
-    </script>
-}
+<script>
+    console.log("Hello");
+    $(document).ready(
+        function generateCalendarView() {
+            generateCalendarHeaderInner();
+            generateCalendarCells();
+            populateSchedulerWithEventData();
+        }
+    );
+</script>

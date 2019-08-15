@@ -40,8 +40,10 @@ node_modules/
 
 **/wwwroot/lib/
 **/wwwroot/lib/*
+**/wwwroot/lib/*/
 wwwroot/lib
 
 **/wwwroot/dist/
 **/wwwroot/dist/*
 wwwroot/dist
+/Flatmate/wwwroot/moment.js

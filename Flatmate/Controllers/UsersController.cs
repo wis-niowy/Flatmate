@@ -34,7 +34,7 @@ namespace Flatmate.Controllers
             var user = await _context.Users
                 .Include(u => u.TeamAssignments)
                     .ThenInclude(ta => ta.Team)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
             {

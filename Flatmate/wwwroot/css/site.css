@@ -120,9 +120,22 @@ li:hover .expense-thumbnail {
     font-size: 12px;
 }
 
+@media (min-width: 992px) {
+    .nav-dropdown-position-right {
+        left: -2.5rem !important;
+    }
+}
+
 @media screen and (min-width: 768px) {
     .row-margin {
         margin: 0 1.8rem 0 3rem;
+    }
+
+}
+
+@media screen and (max-width: 767px) {
+    .margin-left-0-max-sm {
+        margin-left: 0 !important;
     }
 }
 
@@ -143,6 +156,30 @@ li:hover .expense-thumbnail {
     .dashboard-card-big-content {
         height: 250px;
     }
+}
+
+.border-light-dotted {
+    border-style: dotted;
+    border-width: 2px;
+    border-color: lightgrey;
+}
+
+.border-no-top {
+    border-top: none!important;
+}
+
+.border-no-top-right {
+    border-top: none!important;
+    border-right: none!important;
+}
+
+.border-no-top-left {
+    border-top: none!important;
+    border-left: none!important;
+}
+
+.border-no-left {
+    border-left: none !important;
 }
 
 .card-size-400 {
@@ -193,12 +230,6 @@ li:hover .expense-thumbnail {
 
 .settlement-table-wrapper {
     height: 250px;
-}
-
-@media (min-height: 992px) {
-    .nav-dropdown-position-right {
-        left: -2.5rem !important;
-    }
 }
 
 .btn-padding-sm {

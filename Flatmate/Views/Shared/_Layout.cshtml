@@ -39,7 +39,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                    @*TODO: Change Id for Id provided by the user*@
+                    <a class="nav-link" asp-area="" asp-controller="Scheduler" asp-action="Index" asp-route-id="1">
                         Scheduler
                     </a>
                 </li>
@@ -69,7 +70,7 @@
                         <i class="far fa-user text-dark"></i>
                         Profile
                     </a>
-                    <div class="dropdown-menu dropdown-default nav-dropdown-position-right" aria-labelledby="navbarDropdownMenuLink-333">
+                    <div class="dropdown-menu dropdown-default nav-dropdown-position-right w-100" aria-labelledby="navbarDropdownMenuLink-333">
                         @*TODO: zmienić id poniżej na id zalogowanego użytkownika *@
                         <a class="dropdown-item" asp-action="Details" asp-controller="Users" asp-route-id="1">Profile</a>
                         <a class="dropdown-item" href="#">Settings</a>
@@ -90,7 +91,7 @@
                                 <li class="nav-item text-center">
                                     <div class="p-1 mb-1 mt-1">
                                         <a class="nav-link p-1 mt-2 mb-2 border-animation" href="#">
-                                            <div class="border-animation__inner pt-4" title="Show group details!">@groupName</div>
+                                            <div class="rounded border-animation__inner pt-4" title="Show group details!">@groupName</div>
                                         </a>
                                     </div>
                                 </li>
@@ -130,9 +131,7 @@
         </footer>
         <!-- Footer -->
     </div>
-
-    @*<partial name="~/Views/Teams/_createTeamPartial.cshtml" />*@
-
+    
     <environment include="Development">
         <script src="~/lib/jquery/jquery.js"></script>
         <script src="~/lib/popper.js/umd/popper.js"></script>
