@@ -236,4 +236,23 @@ li:hover .expense-thumbnail {
     padding: 5px!important;
 }
 
+.no-inner-padding {
+    padding: 0!important;
+    line-height: 1;
+}
+
+.small-inner-padding {
+    padding: 0.2rem!important;
+}
+
+.calendar-cell-width {
+    width: 13%;
+}
+
+.full-width-break-text {
+    width: 100%;
+    white-space: normal;
+    display: block;
+}
+
 /* Custom Bootstrap 4 CSS end */

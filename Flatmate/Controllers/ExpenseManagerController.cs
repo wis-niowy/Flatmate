@@ -30,7 +30,7 @@ namespace Flatmate.Controllers
         #region OneTimeExpenseControllers
         public IActionResult NewSingleExpense()
         {
-            int userId = 1;
+            //int userId = 1;
             //var flatmates = _repository.Teams.GetUserFlatmates(userId);
             //var viewModel = new NewSingleExpenseViewModel(flatmates);
             return View();
@@ -38,9 +38,9 @@ namespace Flatmate.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> NewSingleExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
+        public IActionResult NewSingleExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
         {
-            int userId = 1;
+            //int userId = 1;
             //if (ModelState.IsValid)
             //{
             //    Expense newExpense = _mapper.Map<Expense>(expenseViewModel);
@@ -54,7 +54,7 @@ namespace Flatmate.Controllers
 
         public IActionResult NewExpenseList()
         {
-            int userId = 1;
+            //int userId = 1;
             //var teamId = _repository.Users.GetUserTeamId(userId);
             //var team = _repository.Teams.GetTeamWithMembersById(teamId);
             //var flatmates = team.UsersCollection.Where(el => el.UserId != userId).ToList();
@@ -64,7 +64,7 @@ namespace Flatmate.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> NewExpenseList([Bind("ExtExpenseItems")] NewExpenseListViewModel expenseViewModel)
+        public IActionResult NewExpenseList([Bind("ExtExpenseItems")] NewExpenseListViewModel expenseViewModel)
         {
             //int userId = 1;
             //if (ModelState.IsValid)
@@ -112,9 +112,9 @@ namespace Flatmate.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOneTimeExpense([Bind("ExpenseId,InitiatorId,ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] EditOneTimeExpenseViewModel expenseViewModel)
+        public IActionResult EditOneTimeExpense([Bind("ExpenseId,InitiatorId,ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] EditOneTimeExpenseViewModel expenseViewModel)
         {
-            int userId = 1;
+            //int userId = 1;
             if (ModelState.IsValid)
             {
                 //Expense newExpense = _mapper.Map<Expense>(expenseViewModel);
@@ -150,9 +150,9 @@ namespace Flatmate.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteOneTimeExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
+        public IActionResult DeleteOneTimeExpense([Bind("ExpenseSubject,Date,Value,ExpenseCategory,DebitorsCollection")] NewSingleExpenseViewModel expenseViewModel)
         {
-            int userId = 1;
+            //int userId = 1;
             if (ModelState.IsValid)
             {
                 //Expense newExpense = _mapper.Map<Expense>(expenseViewModel);
@@ -168,7 +168,7 @@ namespace Flatmate.Controllers
         #region RecurringExpenseControlers
         public IActionResult NewRecurringExpense()
         {
-            int userId = 1;
+            //int userId = 1;
             //var flatmates = _repository.Teams.GetUserFlatmates(userId);
             //var viewModel = new NewRecurringExpenseViewModel(flatmates);
             return View();

@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Flatmate</title>
 
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/scss/custom.min.css" />
+    <link rel="stylesheet" href="~/lib/mdbootstrap/css/mdb.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    @*<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">*@
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/mdbootstrap/css/mdb.min.css"/>
         <link rel="stylesheet" href="~/css/site.css" />
-        <link rel="stylesheet" href="~/scss/custom.min.css" />
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-            asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
@@ -82,32 +82,23 @@
     </header>
     <div class="container-fluid">
         <div class="row">
-                <nav id="" class="d-none d-md-block border-right sidebar p-1 stylish-color left-nav-sizing overflow-auto position-fixed my-5">
-                    <div class="sidebar left-nav-sizing-inner overflow-auto">
-                        <ul class="nav flex-column overflow-auto">
-                            @for (int i = 0; i < 7; i++)
-                            {
-                                var groupName = "G" + i.ToString();
-                                <li class="nav-item text-center">
-                                    <div class="p-1 mb-1 mt-1">
-                                        <a class="nav-link p-1 mt-2 mb-2 border-animation" href="#">
-                                            <div class="rounded border-animation__inner pt-4" title="Show group details!">@groupName</div>
-                                        </a>
-                                    </div>
-                                </li>
-                            }
-                            @* TODO: remove when new group button added*@
-
-                            @*<li class="nav-item text-center">
-                            <div class="p-1 mb-2 mt-2">
-                                <a class="nav-link p-1 mt-2 mb-2" data-toggle="modal" data-target="#modalTeamCreate">
-                                    <img src="~/images/Dashboard/baseline-add_circle_outline-24px.svg" class="w-50 mb-2 mt-2" />
-                                </a>
-                            </div>
-                        </li>*@
-                        </ul>
-                    </div>
-                </nav>
+            <nav id="" class="d-none d-md-block border-right sidebar p-1 stylish-color left-nav-sizing overflow-auto position-fixed my-5">
+                <div class="sidebar left-nav-sizing-inner overflow-auto">
+                    <ul class="nav flex-column overflow-auto">
+                        @for (int i = 0; i < 7; i++)
+                        {
+                            var groupName = "G" + i.ToString();
+                            <li class="nav-item text-center">
+                                <div class="p-1 mb-1 mt-1">
+                                    <a class="nav-link p-1 mt-2 mb-2 border-animation" href="#">
+                                        <div class="rounded border-animation__inner pt-4" title="Show group details!">@groupName</div>
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </nav>
             <div class="w-100 px-4 m-5">
                 @RenderBody()
             </div>
@@ -117,7 +108,7 @@
 
             <!-- Copyright -->
             <div class="footer-copyright text-center py-3">
-                <a class="pr-3 border-right border-white" href="https://mdbootstrap.com/education/bootstrap/"> Flatmate.com</a>
+                <a class="pr-3 border-right border-white" href="#"> Flatmate.com</a>
                 @{
                     var socialIconNames = new string[] { "fa-facebook-f", "fa-twitter", "fa-instagram" };
                     for (int i = 0; i < socialIconNames.Length; i++)
@@ -131,20 +122,26 @@
         </footer>
         <!-- Footer -->
     </div>
-    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="~/lib/moment.js/moment.js"></script>
+    <script src="~/lib/moment.js/locale/pl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+            integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+            integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/lib/mdbootstrap/js/mdb.min.js"></script>
+
     <environment include="Development">
-        <script src="~/lib/jquery/jquery.js"></script>
-        <script src="~/lib/popper.js/umd/popper.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/lib/mdbootstrap/js/mdb.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/scheduler.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.7/js/mdb.min.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/scheduler.js" asp-append-version="true"></script>
     </environment>
 
     @RenderSection("Scripts", required: false)

@@ -1,18 +1,16 @@
-﻿@model Flatmate.Models.EntityModels.ScheduledEvent;
+﻿@model Flatmate.ViewModels.Scheduler.EventDetails;
 
-
-<div class="modal fade" id="modalNewEventCreate" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="modalNewEventCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content rounded">
-            <!--Header-->
             <div id="exampleModalLabel" class="h5 modal-header justify-content-center blue">
                 <i class="fas fa-angle-double-left mr-2 text-white"></i>
                 Create new event!
                 <i class="fas fa-angle-double-right ml-2 text-white"></i>
             </div>
-            <form>
-                <div class="modal-body">
+            <div class="modal-body">
+                <form id="NewEventForm" asp-action="NewEvent">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Title" class="control-label">Event title:</label>
@@ -20,61 +18,51 @@
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Description" class="control-label">Event title:</label>
+                        <label asp-for="Description" class="control-label">Event description:</label>
                         <textarea asp-for="Description" class="form-control" placeholder="Event description..." />
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="IsBlocking" class="control-label">Block other activities during selected period?</label>
-                        <input asp-for="IsBlocking" type="checkbox" class="form-control" />
+                    <div class="form-check-inline">
+                        <label asp-for="IsBlocking" class="control-label">
+                            <input asp-for="IsBlocking" type="checkbox" class="my-3 form-check-input" />Block other activities during selected period?
+                        </label>
                         <span asp-validation-for="IsBlocking" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="StartDate" class="control-label">Event starts at:</label>
-                        <input asp-for="StartDate" type="datetime" class="form-control" />
+                        <div class="input-group date" id="startDateDatetimepicker" data-target-input="nearest">
+                            <input asp-for="StartDate" type="text" class="form-control datetimepicker-input" data-target="#startDateDatetimepicker" />
+                            <div class="input-group-append" data-target="#startDateDatetimepicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
                         <span asp-validation-for="StartDate" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="EndDate" class="control-label">Event ends at:</label>
-                        <input asp-for="EndDate" type="datetime" class="form-control" />
+                        <div class="input-group date" id="endDateDatetimepicker" data-target-input="nearest">
+                            <input asp-for="EndDate" type="text" class="form-control datetimepicker-input" data-target="#endDateDatetimepicker" />
+                            <div class="input-group-append" data-target="#endDateDatetimepicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
                         <span asp-validation-for="EndDate" class="text-danger"></span>
                     </div>
-                    <hr/>
                     <div class="dropdown">
-                        <select id="groupSelect" class="form-control">
-                            <option>La</option>
-                            <option>La</option>
-                            <option>La</option>
+                        <label asp-for="GroupId" class="control-label">Choose team name:</label>
+                        <select asp-for="GroupId" id="groupSelect" class="form-control">
+                            <option value="" selected disabled hidden>Team name >></option>
                         </select>
                     </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button class="btn btn-dark" data-dismiss="modal">Close</button>
-                    <button id="btnSubmit" type="submit" asp-controller="Scheduler" asp-action="Create" class="btn btn-dark">Ready!</button>
-                </div>
-            </form>
+                    <div class="mt-3" id="groupMembersWrapper">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button class="btn btn-dark" data-dismiss="modal">Close</button>
+                <button id="btnSubmit" type="submit" data-save="modal" class="btn btn-dark">Ready!</button>
+            </div>
         </div>
     </div>
 </div>
-
-<script>
-    $('#modalNewEventCreate').on('show.bs.modal', function () {
-
-        var url = "/Scheduler/ListGroupInfo";
-        var data = { id: "1" };
-        $.ajax({
-            type: "GET",
-            url: url,
-            data: data,
-            success: function (result) {
-                var groupSelect = document.getElementById("groupSelect");
-                result.foreach((value, index, array) => {
-                    var selectOption = document.createElement("option");
-                    console.log(value);
-                    selectOption.innerHTML = value.Name;
-                    groupSelect.appendChild(selectOption);
-                });
-            }
-        });
-    })
-</script>
