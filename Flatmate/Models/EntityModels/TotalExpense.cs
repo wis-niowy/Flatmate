@@ -17,5 +17,8 @@ namespace Flatmate.Models.EntityModels
         public bool Covered { get; set; }
         public ExpenseCategory ExpenseCategory { get; set; }
         public ICollection<PartialExpense> PartialExpenses { get; set; }
+        public int OwnerId { get; set; }
+        public User Owner { get; set; }
+
     }
 }

@@ -1,54 +1,29 @@
-﻿
-<link rel="stylesheet" href="~/css/site.css" />
+﻿@model List<Flatmate.Models.EntityModels.SingleComplexOrder>
+@using System.Globalization;
+@{
+    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("de-DE");
+}
 
-<div class="col-lg-4 mb-4 mt-5">
-
-    <!--Card-->
-    <div class="card card-size-400">
-
-        <!--Card header-->
-        <div class="h6 card-header text-center red lighten-3">
-            <i class="fas fa-angle-double-left text-white"></i>
-            <strong>Planned shopping</strong>
-            <i class="fas fa-angle-double-right text-white"></i>
-        </div>
-
-        <!--Card content-->
-        <div class="card-body mr-2">
-            <div class="row overflow-auto dashboard-card-medium-content">
-
-                @for (int j = 0; j < 4; j++)
-                {
-                <div class="col-lg-12 col-sm-6 col-12 mb-2">
-                    <div class="toast animated fadeIn" style="opacity: 1">
-                        <div class="toast-header d-block yellow lighten-5">
-                            <strong>Subject</strong><br />
-                            <i><small>ExpenseCategory</small></i><br />
-                            <small>Created: 2019/07/08</small>
-                        </div>
-                        <div class="toast-body">
-                            <ul class="p-1">
-                                @for (int i = 0; i < 5; i++)
-                                {
-                                    <li>Item - Amount <small>Unit</small></li>
-                                }
-                            </ul>
-                        </div>
-                        <a class="fas fa-shopping-cart m-3 float-right" href="#" title="Done!"></a>
-                        <a class="fas fa-trash m-3 float-right" href="#" title="Delete!"></a>
-                    </div>
-                </div>
-                }
+@foreach (var shoppingList in Model)
+{
+    <div class="col-lg-12 col-sm-6 col-12 mb-2">
+        <div class="toast animated fadeIn" style="opacity: 1">
+            <div class="toast-header d-block yellow lighten-5">
+                <strong>@shoppingList.Subject</strong><br />
+                <i><small>@shoppingList.ExpenseCategory</small></i><br />
+                <small>Created: @shoppingList.CreationDate.ToString("d", cultureInfo)</small>
             </div>
-
-            <div class="col-sm-12 pl-1 pr-2 py-0 mt-3">
-                <button type="button" class="btn blue lighten-2 btn-block p-2 m-2 dashboard-card-font text-white">
-                    Shopping module 
-                    <i class="fas fa-angle-double-right"></i>
-                    <span class="sr-only">create new shopping list</span>
-                </button>
+            <div class="toast-body">
+                <ul class="p-1">
+                    @foreach(var pe in shoppingList.OrderElements)
+                    {
+                        <li>@pe.Title - @pe.Amount <small>@pe.Unit</small></li>
+                    }
+                </ul>
             </div>
+            <a asp-action="Finalize" asp-controller="Shopping" asp-route-id="@shoppingList.Id" class="fas fa-shopping-cart m-3 float-right" title="Done!"></a>
+            <a asp-action="Delete" asp-controller="Shopping" asp-route-id="@shoppingList.Id" class="fas fa-trash m-3 float-right" title="Delete!"></a>
         </div>
     </div>
-    <!--/.Card-->
-</div>
+}
+            

@@ -36,6 +36,7 @@ namespace Flatmate.Data
             ConfigureRecurringBillRelations(modelBuilder);
             ConfigureExpenseRelations(modelBuilder);
             ConfigureEventRelations(modelBuilder);
+            ConfigureUserexpensesRealtions(modelBuilder);
 
             //Configuring enum mapping
             ConfigureEnumMapping(modelBuilder);
@@ -142,6 +143,14 @@ namespace Flatmate.Data
             {
                 type.Relational().ColumnType = "decimal(18, 2)";
             }
+        }
+        private static void ConfigureUserexpensesRealtions(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TotalExpense>()
+                .HasOne(te => te.Owner)
+                .WithMany(u => u.TotalExpenses)
+                .HasForeignKey(ut => ut.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

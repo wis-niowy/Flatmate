@@ -29,14 +29,13 @@ namespace Flatmate.Data
             var RBPTMs = InitializeRBPTM(context, userTeams, recurringBills);
 
             //Budget manager - total and partial expenses with their connections
-            var totalExpenses = InitializeTotalExpenses(context);
+            var totalExpenses = InitializeTotalExpenses(context, users);
             var partialExpenses = InitializePartialExpenses(context, userTeams, totalExpenses);
 
             //Calendar - events with their connections
             var scheduledEvents = InitializeScheduledEvents(context);
             var SEUs = InitializeSEUs(context, userTeams, scheduledEvents);
         }
-
         private static User [] InitializeUsers(FlatmateContext context)
         {
             var users = new User[]
@@ -355,7 +354,7 @@ namespace Flatmate.Data
                     ExpenseCategory = Helpers.ExpenseCategory.Bill,
                     ExpirationDate = DateTime.Parse("06/05/2021"),
                     Frequency = Helpers.Frequency.Every2Months,
-                    LastOccurenceDate = DateTime.Parse("03/07/2019"),
+                    LastOccurenceDate = DateTime.Parse("06/07/2019"),
                     StartDate = DateTime.Parse("06/05/2018"),
                     Subject = "Miesięczne opłaty",
                     Value = 295.0
@@ -366,7 +365,7 @@ namespace Flatmate.Data
                     ExpenseCategory = Helpers.ExpenseCategory.Bill,
                     ExpirationDate = DateTime.Parse("11/07/2020"),
                     Frequency = Helpers.Frequency.EveryMonth,
-                    LastOccurenceDate = DateTime.Parse("04/07/2019"),
+                    LastOccurenceDate = DateTime.Parse("11/08/2019"),
                     StartDate = DateTime.Parse("11/07/2018"),
                     Subject = "Internet",
                     Value = 125.0
@@ -431,7 +430,7 @@ namespace Flatmate.Data
 
             return RBPTMs;
         }
-        private static TotalExpense [] InitializeTotalExpenses(FlatmateContext context)
+        private static TotalExpense [] InitializeTotalExpenses(FlatmateContext context, User [] users)
         {
             var totalExpenses = new TotalExpense[]
             {
@@ -441,7 +440,8 @@ namespace Flatmate.Data
                     ExpenseCategory = Helpers.ExpenseCategory.Shopping,
                     FinalizationDate = DateTime.Parse("05/05/2018"),
                     Subject = "Nowe żarówki",
-                    Value = 10.0
+                    Value = 10.0,
+                    OwnerId = users.First(u => u.FirstName == "Robert").Id
                 },
                 new TotalExpense
                 {
@@ -449,7 +449,8 @@ namespace Flatmate.Data
                     ExpenseCategory = Helpers.ExpenseCategory.Shopping,
                     FinalizationDate = DateTime.Parse("08/06/2018"),
                     Subject = "Nowa kanapa",
-                    Value = 100.0
+                    Value = 100.0,
+                    OwnerId = users.First(u => u.FirstName == "Tom").Id
                 },
                 new TotalExpense
                 {
@@ -457,7 +458,8 @@ namespace Flatmate.Data
                     ExpenseCategory = Helpers.ExpenseCategory.Shopping,
                     FinalizationDate = DateTime.Parse("01/21/2018"),
                     Subject = "Paliwo",
-                    Value = 107.0
+                    Value = 107.0,
+                    OwnerId = users.First(u => u.FirstName == "Tom").Id
                 },
                 new TotalExpense
                 {
@@ -465,7 +467,8 @@ namespace Flatmate.Data
                     ExpenseCategory = Helpers.ExpenseCategory.Shopping,
                     FinalizationDate = DateTime.Parse("05/03/2019"),
                     Subject = "Żarcie na przyjęcie",
-                    Value = 69.99
+                    Value = 69.99,
+                    OwnerId = users.First(u => u.FirstName == "Tom").Id
                 }
             };
 
@@ -503,13 +506,13 @@ namespace Flatmate.Data
                     Covered = false,
                     TotalExpenseId = totalExpenses.First(te => te.Subject == "Nowa kanapa").Id,
                     TeamId = userTeams.First(ut => ut.Team.Name == "Grzybowska 96").TeamId,
-                    UserId = userTeams.First(ut => ut.User.FirstName == "Tom").UserId,
+                    UserId = userTeams.First(ut => ut.User.FirstName == "Alice").UserId,
                     Value = 50.0
                 },
                 new PartialExpense
                 {
                     Covered = false,
-                    TotalExpenseId = totalExpenses.First(te => te.Subject == "Nowe żarówki").Id,
+                    TotalExpenseId = totalExpenses.First(te => te.Subject == "Nowa kanapa").Id,
                     TeamId = userTeams.First(ut => ut.Team.Name == "Grzybowska 96").TeamId,
                     UserId = userTeams.First(ut => ut.User.FirstName == "Robert").UserId,
                     Value = 50.0

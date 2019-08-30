@@ -11,7 +11,7 @@ namespace Flatmate.Models.EntityModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-                
+        public ICollection<TotalExpense> TotalExpenses { get; set; }
         public ICollection<UserTeam> TeamAssignments { get; set; }
 
         public string FullName

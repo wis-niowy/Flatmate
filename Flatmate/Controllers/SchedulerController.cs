@@ -53,8 +53,8 @@ namespace Flatmate.Controllers
 
             //TODO: Add some serious data when validation added
             eventDetails.GroupName = "GroupName";
-            var pNames = new string[eventDetails.ParticipantIds.Length];
-            for (int i = 0; i < eventDetails.ParticipantIds.Length; i++)
+            var pNames = new string[(eventDetails.ParticipantIds ?? new int[] { }).Length];
+            for (int i = 0; i < (eventDetails.ParticipantIds ?? new int[] { }).Length; i++)
             {
                 pNames[i] = "Leo";
             }
@@ -66,11 +66,11 @@ namespace Flatmate.Controllers
                 try
                 {
                     var usersParticipations = _context.ScheduledEventUsers.Where(seu => seu.ScheduledEventId == eventDetails.Id);
-                    var ownerId = usersParticipations.FirstOrDefault(p => p.IsOwner == true).UserId;
+                    var ownerId = usersParticipations.First(p => p.IsOwner == true).UserId;
                     _context.ScheduledEventUsers.RemoveRange(usersParticipations);
 
                     var SEUsToInsert = new List<ScheduledEventUser>();
-                    foreach (var userId in eventDetails.ParticipantIds)
+                    foreach (var userId in eventDetails.ParticipantIds ?? new int[] { })
                     {
                         SEUsToInsert.Add(new ScheduledEventUser
                         {
@@ -92,7 +92,7 @@ namespace Flatmate.Controllers
                     });
 
                     await _context.ScheduledEventUsers.AddRangeAsync(SEUsToInsert);
-                    await _context.SaveChangesAsync();                    
+                    await _context.SaveChangesAsync();
                 }
                 catch (RetryLimitExceededException /* dex */)
                 {
@@ -100,25 +100,28 @@ namespace Flatmate.Controllers
                 }
             }
 
-
             return PartialView("_showEventDetailsPartial", eventDetails);
-        }        
+        }
 
         public IActionResult EventDetails(int eventId)
         {
             var scheduledEvent = _context.ScheduledEvents
                 .Include(se => se.AttachedUsersCollection)
+                .AsNoTracking()
                 .FirstOrDefault(e => e.Id == eventId);
 
             var eventUser = _context.ScheduledEventUsers
+                .AsNoTracking()
                 .FirstOrDefault(seu => seu.ScheduledEventId == eventId);
 
             var eventTeam = _context.Teams
+                .AsNoTracking()
                 .FirstOrDefault(t => t.Id == eventUser.TeamId);
 
             var participantsInfo = _context.Users
                 .Where(u => scheduledEvent.AttachedUsersCollection.Any(p => p.UserId == u.Id))
                 .Select(u => new Tuple<int, string>(u.Id, u.FullName))
+                .AsNoTracking()
                 .ToArray();
 
             var groupInfo = new Tuple<int, string>(eventTeam.Id, eventTeam.Name);
@@ -151,6 +154,47 @@ namespace Flatmate.Controllers
 
                 _context.ScheduledEventUsers.RemoveRange(userParticipations);
                 _context.ScheduledEvents.Remove(new ScheduledEvent { Id = eventId });
+
+                _context.SaveChanges();
+            }
+            catch (DataException/* dex */)
+            {
+                //TODO: change the id to the currentUser and signal error
+            }
+            return RedirectToAction(nameof(Index), new { id = 1 });
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UnsubFromEvent(int eventId)
+        {
+            try
+            {
+                var currentUserId = 1;
+                var userParticipations = _context.ScheduledEventUsers
+                    .Where(seu => seu.ScheduledEventId == eventId)
+                    .ToList();
+
+                var currentUserParticipation = userParticipations.Find(up => up.UserId == currentUserId);
+
+                bool isEventToDelete = userParticipations.Count == 1,
+                    isCurrentUserEventOwner = currentUserParticipation.IsOwner;
+                _context.ScheduledEventUsers.Remove(currentUserParticipation);
+
+                if (isEventToDelete)
+                {
+                    _context.ScheduledEvents.Remove(new ScheduledEvent { Id = eventId });
+                }
+                else
+                {
+                    if (isCurrentUserEventOwner)
+                    {
+                        var ownerToBe = userParticipations.Find(up => up.UserId != currentUserId);
+                        ownerToBe.IsOwner = true;
+
+                        await TryUpdateModelAsync<ScheduledEventUser>(ownerToBe, "",
+                            e => e.IsOwner);
+                    }
+                }
 
                 _context.SaveChanges();
             }
@@ -195,7 +239,7 @@ namespace Flatmate.Controllers
                 };
 
                 //Creating per user invitations
-                foreach (var userId in eventInvitation.ParticipantIds)
+                foreach (var userId in eventInvitation.ParticipantIds ?? new int[] { })
                 {
                     seuToAppend.Add(new ScheduledEventUser
                     {
@@ -209,6 +253,7 @@ namespace Flatmate.Controllers
                 _context.ScheduledEventUsers.AddRange(seuToAppend);
                 _context.SaveChanges();
 
+                //TODO: change for the currentUserId
                 return RedirectToAction("Index", "Scheduler", new { id = 1 });
             }
             return PartialView("_createNewEventPartial", eventInvitation);
@@ -224,6 +269,7 @@ namespace Flatmate.Controllers
         public async Task<IActionResult> FindGroupName(int groupId)
         {
             return Json(await _context.Teams
+                .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == groupId));
         }
         public async Task<IActionResult> ListGroupMembersInfo(int groupId)

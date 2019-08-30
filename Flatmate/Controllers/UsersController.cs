@@ -20,7 +20,9 @@ namespace Flatmate.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.Users
+                .AsNoTracking()
+                .ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -34,7 +36,8 @@ namespace Flatmate.Controllers
             var user = await _context.Users
                 .Include(u => u.TeamAssignments)
                     .ThenInclude(ta => ta.Team)
-                        .FirstOrDefaultAsync(x => x.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
             {
@@ -56,7 +59,8 @@ namespace Flatmate.Controllers
                 .Include(u => u.TeamAssignments)
                     .ThenInclude(ta => ta.Team)
                         .ThenInclude(t => t.UserAssignments)
-                            .ThenInclude(ua => ua.User)                        
+                            .ThenInclude(ua => ua.User)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (user == null)
@@ -65,34 +69,7 @@ namespace Flatmate.Controllers
             }
 
             return View(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            //_context.Users.Add(new Models.User() {
-            //    FirstName = "Janusz",
-            //    LastName = "Tracz",
-            //    EmailAddress = "janusz.tracz@gmail.com"
-            //});
-            return View();
-        }
-
-        // POST: Users/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,EmailAddress")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
+        }        
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -102,45 +79,34 @@ namespace Flatmate.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
+            var user = await _context.Users.SingleAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
             return View(user);
         }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,EmailAddress")] User user)
+        public async Task<IActionResult> Edit([Bind("Id,FirstName,LastName,EmailAddress")] User user)
         {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    var dbUser = _context.Users.Find(user.Id);
+                    if(await TryUpdateModelAsync<User>(dbUser, "", u => u.FirstName, u => u.LastName, u => u.EmailAddress))
+                    {
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //TODO: insert logic here & check other errors
                 }
-                return RedirectToAction(nameof(Index));
+                //TODO: change id to current user
+                return RedirectToAction(nameof(Details), new { id = 1 });
             }
             return View(user);
         }

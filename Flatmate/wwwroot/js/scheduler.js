@@ -169,6 +169,11 @@ function initializeEventDetailsButton(eventTitle, startDateHour, endDateHour, bu
     var buttonId = 'eventButton-' + buttonNumber;
     button.id = buttonId;
 
+    const actionToCofirmType = {
+        DELETE: 'delete',
+        UNSUBSCRIBE: 'unsub'
+    };
+
     var placeholderElement = $('#event-details-modal-placeholder');
     button.addEventListener("click", function () {
         var eventDetailsUrl = "/Scheduler/EventDetails";
@@ -179,8 +184,20 @@ function initializeEventDetailsButton(eventTitle, startDateHour, endDateHour, bu
             var eventDeleteBtn = document.getElementById('eventDeleteBtn');
             eventDeleteBtn.addEventListener('click', function () {
                 if ($.find('#confirmDelete').length === 0) {
+                    removeConfirmSectionIfExists('#confirmUnsub');
+
                     var modalContentDiv = $('.modal-content');
-                    modalContentDiv.append(generateConfirmDeleteSection(buttonId));
+                    modalContentDiv.append(generateConfirmActionSection(buttonId, actionToCofirmType.DELETE));
+                }
+            });
+
+            var eventUnsubBtn = document.getElementById('eventUnsubBtn');
+            eventUnsubBtn.addEventListener('click', function () {
+                if ($.find('#confirmUnsub').length === 0) {
+                    removeConfirmSectionIfExists('#confirmDelete');
+
+                    var modalContentDiv = $('.modal-content');
+                    modalContentDiv.append(generateConfirmActionSection(buttonId, actionToCofirmType.UNSUBSCRIBE));
                 }
             });
 
@@ -208,18 +225,27 @@ function initializeEventDetailsButton(eventTitle, startDateHour, endDateHour, bu
     return button;
 }
 
-function generateConfirmDeleteSection(deleteButtonId) {
-    var deleteConfirmDiv = document.createElement('div');
-    deleteConfirmDiv.setAttribute('id', 'confirmDelete');
-    deleteConfirmDiv.classList.add('modal-footer', 'd-block');
+
+function generateConfirmActionSection(eventButtonId, action) {
+
+    const actionToCofirmType = {
+        DELETE: 'delete',
+        UNSUBSCRIBE: 'unsub'
+    };
+
+    var actionConfirmDiv = document.createElement('div');
+    var divId = action === actionToCofirmType.DELETE ? 'confirmDelete' : 'confirmUnsub';
+    actionConfirmDiv.setAttribute('id', divId);
+    actionConfirmDiv.classList.add('modal-footer', 'd-block');
 
     var labelDiv = document.createElement('div');
     labelDiv.classList.add('w-100', 'd-flex', 'justify-content-center');
 
     var confirmLabel = document.createElement('label');
-    confirmLabel.innerText = 'Confirm event delete?';
+    var innerText = action === actionToCofirmType.DELETE ? 'Confirm delete?' : 'Confirm unsubscribe?';
+    confirmLabel.innerText = innerText;
     labelDiv.appendChild(confirmLabel);
-    deleteConfirmDiv.appendChild(labelDiv);
+    actionConfirmDiv.appendChild(labelDiv);
 
     var confirmButtonsDiv = document.createElement('div');
     confirmButtonsDiv.classList.add('d-flex', 'justify-content-center');
@@ -228,37 +254,59 @@ function generateConfirmDeleteSection(deleteButtonId) {
     cancelButton.classList.add('btn', 'btn-dark');
     cancelButton.innerHTML = 'No';
     cancelButton.addEventListener('click', function () {
-        $('#confirmDelete').remove();
+        $('#' + divId).remove();
     });
     confirmButtonsDiv.appendChild(cancelButton);
     var confirmButton = document.createElement('button');
     confirmButton.classList.add('btn', 'btn-dark');
     confirmButton.innerHTML = 'Yes';
     confirmButton.addEventListener('click', function () {
-        var deleteEventUrl = '/Scheduler/DeleteEvent';
-        var eventId = document.getElementById('Id').value.toString();
-        var deleteEventData = { eventId: eventId };
-        $.ajax({
-            type: "DELETE",
-            url: deleteEventUrl,
-            data: deleteEventData,
-            success: function () {
-                $('#' + deleteButtonId).remove();
-                var placeholderElement = $('#event-details-modal-placeholder');
-                placeholderElement.find('.modal').modal('hide');
-
-            }
-        });
+        action === actionToCofirmType.DELETE ? confirmDelete(eventButtonId) : confirmUnsubcribe(eventButtonId);
     });
     confirmButtonsDiv.appendChild(confirmButton);
-    deleteConfirmDiv.appendChild(confirmButtonsDiv);
-    return deleteConfirmDiv;
+    actionConfirmDiv.appendChild(confirmButtonsDiv);
+    return actionConfirmDiv;
+}
+
+function confirmDelete(deleteButtonId) {
+    var deleteEventUrl = '/Scheduler/DeleteEvent';
+    var eventId = document.getElementById('Id').value.toString();
+    var deleteEventData = { eventId: eventId };
+    $.ajax({
+        type: "DELETE",
+        url: deleteEventUrl,
+        data: deleteEventData,
+        success: function () {
+            $('#' + deleteButtonId).remove();
+            var placeholderElement = $('#event-details-modal-placeholder');
+            placeholderElement.find('.modal').modal('hide');
+        }
+    });
+}
+
+function confirmUnsubcribe(unsubButtonId) {
+    var unsubEventUrl = '/Scheduler/UnsubFromEvent';
+    var eventId = document.getElementById('Id').value.toString();
+    var unsubEventData = { eventId: eventId };
+    $.ajax({
+        type: "PUT",
+        url: unsubEventUrl,
+        data: unsubEventData,
+        success: function () {
+            $('#' + unsubButtonId).remove();
+            var placeholderElement = $('#event-details-modal-placeholder');
+            placeholderElement.find('.modal').modal('hide');
+        }
+    });
 }
 
 function initializeDatePickersWithInitialDates(firstDTPSelector, secondDTPSelector, parsedStartDate, parsedEndDate) {
-
+    console.log(parsedStartDate);
+    console.log(parsedEndDate);
     $(firstDTPSelector).datetimepicker('maxDate', parsedEndDate);
     $(secondDTPSelector).datetimepicker('minDate', parsedStartDate);
+    console.log(parsedStartDate);
+    console.log(parsedEndDate);
 
     linkDatetimepickersBySelectors(firstDTPSelector, secondDTPSelector);
 }
@@ -295,12 +343,13 @@ function generateCalendarCellIdFromDate(splitDate) {
     var cellId = weekDay + '-' + Math.floor(startHoursMinutes[0] / 4);
     return cellId;
 }
+
 function enterEventDetailsEditMode(nonEditModalData, editButtonHandle, parsedDates, buttonId) {
     var isEditModeEntered = editButtonHandle.getAttribute("data-clicked");
     
     var participantsLabel = document.createElement("label");
-    var startDateDatetimepicker = document.getElementById('startDateDatetimepicker');
-    var endDateDatetimepicker = document.getElementById('endDateDatetimepicker');
+    var startDateDatetimepicker = document.getElementById('startDateEventDetails');
+    var endDateDatetimepicker = document.getElementById('endDateEventDetails');
     var groupIdInput = document.getElementById("GroupId");
     switch (isEditModeEntered) {
         case 'false':
@@ -370,6 +419,7 @@ function enterEventDetailsEditMode(nonEditModalData, editButtonHandle, parsedDat
 
             var modalFooter = $('.modal-footer');
             modalFooter.find('#eventDeleteBtn').remove();
+            modalFooter.find('#eventUnsubBtn').remove();
             var confirmEditButton = $("<button data-save='modal'></button>");
             confirmEditButton.addClass("btn btn-dark");
             confirmEditButton.attr({
@@ -385,14 +435,41 @@ function enterEventDetailsEditMode(nonEditModalData, editButtonHandle, parsedDat
             $('.modal-body').replaceWith(nonEditModalData.modalBodyHtml);
             $('.modal-footer').replaceWith(nonEditModalData.modalFooterHtml);
 
+            const actionToCofirmType = {
+                DELETE: 'delete',
+                UNSUBSCRIBE: 'unsub'
+            };
+
+            removeConfirmSectionIfExists('#confirmDelete');
+            removeConfirmSectionIfExists('#confirmUnsub');
+
             var eventDeleteBtn = document.getElementById('eventDeleteBtn');
             eventDeleteBtn.addEventListener('click', function () {
                 if ($.find('#confirmDelete').length === 0) {
+                    removeConfirmSectionIfExists('#confirmUnsub');
+
                     var modalContentDiv = $('.modal-content');
-                    modalContentDiv.append(generateConfirmDeleteSection(buttonId));
+                    modalContentDiv.append(generateConfirmActionSection(buttonId, actionToCofirmType.DELETE));
+                }
+            });
+
+            var eventUnsubBtn = document.getElementById('eventUnsubBtn');
+            eventUnsubBtn.addEventListener('click', function () {
+                if ($.find('#confirmUnsub').length === 0) {
+                    removeConfirmSectionIfExists('#confirmDelete');
+
+                    var modalContentDiv = $('.modal-content');
+                    modalContentDiv.append(generateConfirmActionSection(buttonId, actionToCofirmType.UNSUBSCRIBE));
                 }
             });
             break;
+    }
+}
+
+function removeConfirmSectionIfExists(sectionSelector) {
+    var confirmSection = $.find(sectionSelector);
+    if (confirmSection.length === 1) {
+        $(sectionSelector).remove();
     }
 }
 
@@ -415,8 +492,7 @@ function initializeEventDetailsModal() {
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');
         var primaryData = form.serializeArray();
-
-        var startTime;
+        
         var dataToSend = [];
         primaryData.forEach((value, index, array) => {
             var singleDataElement = {};
@@ -458,6 +534,10 @@ function initializeEventDetailsModal() {
             populateSchedulerWithEventData();
         });
     });
+
+    placeholderElement.on('hidden.bs.modal', '.modal', function (event) {
+        placeholderElement.find('.modal').remove();
+    });
 }
 function initializeNewEventModal() {
     var placeholderElement = $('#new-event-modal-placeholder');
@@ -466,9 +546,9 @@ function initializeNewEventModal() {
         var url = $(this).data('url');
         $.get(url).done(function (data) {
             placeholderElement.html(data);
-            initializeDatePickers('#startDateDatetimepicker', '#endDateDatetimepicker');
+            initializeDatePickers('#startDateNewEvent', '#endDateNewEvent');
             initializeSelectGroup();
-            placeholderElement.find('.modal').modal('show');
+            placeholderElement.find('#modalNewEventCreate').modal('show');
         });
     });
 
@@ -513,13 +593,17 @@ function initializeNewEventModal() {
             var weekStartDate = parseCalendarHeadDateToMoment(startWeekDayIndex),
                 weekEndDate = setMomentEndDayHour(parseCalendarHeadDateToMoment(endWeekDayIndex));
 
-            placeholderElement.find('.modal').modal('hide');
+            placeholderElement.find('#modalNewEventCreate').modal('hide');
             
             if (weekStartDate <= startDate && startDate < weekEndDate) {
                 clearWeeklyEvents();
                 populateSchedulerWithEventData();
             }
         });
+    });
+
+    placeholderElement.on('hidden.bs.modal', '.modal', function (event) {
+        placeholderElement.find('.modal').remove();
     });
 }
 
@@ -533,9 +617,7 @@ function parseDatepickersDate(dateString) {
     return splitDate;
 }
 function parseToDatepickersDate(dateString) {
-    console.log('Before: ' + dateString);
     var splitDate = dateString.split(/[-\s]+/);
-    console.log('After: ' + splitDate);
     splitDate = splitDate[2] + '.' + splitDate[1] + '.' + splitDate[0] + ' ' + splitDate[3].substring(0,5);
     return splitDate;
 }

@@ -255,4 +255,16 @@ li:hover .expense-thumbnail {
     display: block;
 }
 
+.profile-photo {
+    height: 5rem;
+    width: 5rem;
+    margin-top: -3.5rem;
+    margin-right: 2rem;
+}
+
+.small-avatar-sizing {
+    height: 30px;
+    width: 30px;
+}
+
 /* Custom Bootstrap 4 CSS end */

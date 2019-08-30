@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Flatmate.Models.EntityModels;
 using Flatmate.ViewModels.Dashboard;
+using Flatmate.ViewModels.Scheduler;
 
-namespace Flatmate.ViewModels
+namespace Flatmate.ViewModels.Dashboard
 {
     public class DashboardViewModel
     {
-        public IEnumerable<LiabilityExpenseViewModel> UserLiabilities { get; set; } // 'I owe'
-        public IEnumerable<CredibilityExpenseViewModel> UserCredibilities { get; set; } // 'I am owed'
-        public Dictionary<User,double> FlatmateBalances { get; set; } // balance with every flatmate
+        public IEnumerable<EventDetails> UpcomingEventsList { get; set; }
+        public IEnumerable<SingleComplexOrder> PlannedShoppingInformations { get; set; }
+        public IEnumerable<SettlementViewModel.SingleExpense> UserCredibilities { get; set; }
+        public IEnumerable<SettlementViewModel.SingleExpense> UserLiabilities { get; set; }
+        public IEnumerable<RecurringBill> RecurringBills { get; set; }
     }
 }
