@@ -1,0 +1,54 @@
+﻿@model Flatmate.Models.EntityModels.TotalExpense
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TotalExpense</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Subject)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Subject)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FinalizationDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FinalizationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Covered)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Covered)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpenseCategory)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpenseCategory)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Owner)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Owner.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

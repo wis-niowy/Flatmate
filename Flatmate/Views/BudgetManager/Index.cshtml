@@ -1,0 +1,105 @@
+﻿
+<div id="new-shop-list-modal-placeholder"></div>
+<div id="bill-modal-placeholder"></div>
+<div id="settlement-modal-placeholder"></div>
+
+<div id="accordion">
+    @*Shopping module*@
+    <div class="my-md-5 ml-md-5 my-5 card">
+        <div id="shopHeading" role="button" class="rounded view view-cascade py-3 blue lighten-2 mx-4 d-flex justify-content-between align-items-center" style="margin-top:-1rem">
+            <div class="col-md-8 ml-3 row" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <div><b>Shopping <br /> module</b></div>
+                <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
+            </div>
+            <div class="col-md-3" style="text-align:right">
+                <button type="button" title="Add new shopping list" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
+                        data-toggle="ajax-shopping-list-modal" data-target="#modalShoppingListCreate" data-url="@Url.Action("NewShoppingList")">
+                    <i class="fas fa-plus mt-0"></i>
+                </button>
+                <button type="button" title="Shopping module manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
+                    <i class="fas fa-info-circle mt-0"></i>
+                </button>
+            </div>
+        </div>
+        <div id="collapseOne" class="collapse show card-body" aria-labelledby="shopHeading" data-parent="#accordion">
+            <div class="row">
+                <div id="plannedShoppingDiv" class="col-lg-4 col-md-5 col-12 overflow-auto">
+
+                </div>
+                <div id="shoppingDetailsDiv" class="col-lg-7 col-md-6 col-12">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Bills module*@
+    <div class="my-md-5 ml-md-5 my-5 card">
+        <!--Card header-->
+        <div id="billHeading" role="button" class="rounded view view-cascade py-3 blue lighten-2 mx-4 d-flex justify-content-between align-items-center collapsed" style="margin-top:-1rem">
+            <div class="col-md-8 ml-3 row" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <div><b>Recurring <br /> bills</b></div>
+                <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
+            </div>
+            <div class="col-md-3" style="text-align:right">
+                <button type="button" title="Add new recurring bill" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
+                        data-toggle="ajax-recurring-bill-modal" data-target="#modalRecurringBillCreate" data-url="@Url.Action("NewRecurringBill")">
+                    <i class="fas fa-plus mt-0"></i>
+                </button>
+                <button type="button" title="Bills module manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
+                    <i class="fas fa-info-circle mt-0"></i>
+                </button>
+            </div>
+        </div>
+        <div id="collapseTwo" class="card-body collapse" aria-labelledby="billHeading" data-parent="#accordion">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+    </div>
+
+    @*Expense history module*@
+    <div class="my-md-5 ml-md-5 my-5 card">
+        <div id="expenseHeading" role="button" class="rounded view view-cascade py-3 blue lighten-2 mx-4 d-flex justify-content-between align-items-center collapsed" style="margin-top:-1rem">
+            <div class="col-md-8 ml-3 row" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <div><b>Expenses <br /> history</b></div>
+                <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
+            </div>
+            <div class="col-md-3" style="text-align:right">
+                <button type="button" title="Expense history manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
+                    <i class="fas fa-info-circle mt-0"></i>
+                </button>
+            </div>
+        </div>
+        <div id="collapseThree" class="card-body collapse" aria-labelledby="expenseHeading" data-parent="#accordion">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+    </div>
+
+    @*Settlements module*@
+    <div class="my-md-5 ml-md-5 my-5 card">
+        <div id="settlementHeading" role="button" class="rounded view view-cascade py-3 blue lighten-2 mx-4 d-flex justify-content-between align-items-center collapsed" style="margin-top:-1rem">
+            <div class="col-md-8 ml-3 row" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <div class="align-self-center"><b>Settlements</b></div>
+                <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
+            </div>
+            <div class="col-md-3" style="text-align:right">
+                <button type="button" title="Add new expense" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
+                        data-toggle="ajax-new-expense-modal" data-target="#modalExpenseCreate" data-url="@Url.Action("NewExpense")">
+                    <i class="fas fa-plus mt-0"></i>
+                </button>
+                <button type="button" title="Settlements module manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
+                    <i class="fas fa-info-circle mt-0"></i>
+                </button>
+            </div>
+        </div>
+        <div id="collapseFour" class="card-body collapse" aria-labelledby="settlementHeading" data-parent="#accordion">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="~/js/budgetManager.js"></script>
+
+<script>
+    generateBudgetManagerView();
+</script>   

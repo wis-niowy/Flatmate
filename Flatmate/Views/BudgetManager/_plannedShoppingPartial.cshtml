@@ -1,0 +1,56 @@
+﻿@model List<Flatmate.Models.EntityModels.SingleComplexOrder>
+@using System.Globalization;
+@{
+    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("de-DE");
+    var exampleElements = 4;
+}
+@if (Model.Count > 0)
+{
+    @foreach (var shoppingList in Model)
+    {
+        <div class="col-12 mb-2">
+            <div class="toast animated fadeIn mx-auto" style="opacity: 1">
+                <div class="toast-header d-block yellow lighten-5">
+                    <strong>@shoppingList.Subject</strong><br />
+                    <i><small>@shoppingList.ExpenseCategory</small></i><br />
+                    <small>Created: @shoppingList.CreationDate.ToString("d", cultureInfo)</small>
+                </div>
+                <div class="toast-body">
+                    <ul class="p-1">
+                        @foreach (var pe in shoppingList.OrderElements)
+                        {
+                            <li>@pe.Title - @pe.Amount <small>@pe.Unit</small></li>
+                        }
+                    </ul>
+                </div>
+                @*TODO: change action redirect*@
+                <a onclick="activateFinalizeCard(@shoppingList.Id)" class="fas fa-shopping-cart m-3 float-right" title="Done!"></a>
+                <a onclick="activateDeleteCard(@shoppingList.Id)" class="fas fa-trash m-3 float-right" title="Delete!"></a>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="col-12 mb-2">
+        <div class="toast animated fadeIn mx-auto" style="opacity: 1">
+            <div class="toast-header d-block yellow lighten-5">
+                <strong>Create your shopping list!</strong><br />
+                <i><small>Expense category</small></i><br />
+                <small>Creation date</small>
+            </div>
+            <div class="toast-body">
+                <ul class="p-1">
+                    @for (int i = 0; i < exampleElements; i++)
+                    {
+                        <li>Title - Amount <small>Unit</small></li>
+                    }
+                </ul>
+            </div>
+            <a href="#" class="fas fa-shopping-cart m-3 float-right" title="Done!"></a>
+            <a href="#" class="fas fa-trash m-3 float-right" title="Delete!"></a>
+        </div>
+    </div>
+
+}
+

@@ -547,7 +547,7 @@ function initializeNewEventModal() {
         $.get(url).done(function (data) {
             placeholderElement.html(data);
             initializeDatePickers('#startDateNewEvent', '#endDateNewEvent');
-            initializeSelectGroup();
+            initializeSchedulerSelectGroup();
             placeholderElement.find('#modalNewEventCreate').modal('show');
         });
     });
@@ -588,6 +588,7 @@ function initializeNewEventModal() {
             }
         });
         
+        //TODO: check if working for bad values - modal shouldn't hide
         $.post(actionUrl, dataToSend).done(function (data) {
             var startWeekDayIndex = 0, endWeekDayIndex = 6;
             var weekStartDate = parseCalendarHeadDateToMoment(startWeekDayIndex),
@@ -621,7 +622,8 @@ function parseToDatepickersDate(dateString) {
     splitDate = splitDate[2] + '.' + splitDate[1] + '.' + splitDate[0] + ' ' + splitDate[3].substring(0,5);
     return splitDate;
 }
-function initializeSelectGroup() {
+
+function initializeSchedulerSelectGroup() {
     var listGroupInfoUrl = "/Scheduler/ListGroupInfo";
     var selectData = { userId: "1" };
     $.ajax({
@@ -629,7 +631,7 @@ function initializeSelectGroup() {
         url: listGroupInfoUrl,
         data: selectData,
         success: function (result) {
-            var groupSelect = document.getElementById("groupSelect");
+            var groupSelect = document.getElementById("groupNESelect");
             result.forEach((value, index, array) => {
                 var selectOption = document.createElement("option");
                 selectOption.text = value["name"];
@@ -637,15 +639,15 @@ function initializeSelectGroup() {
                 groupSelect.appendChild(selectOption);
             });
 
-            $("#groupSelect").on('change', function () {
+            $("#groupNESelect").on('change', function () {
                 var listGroupMembersUrl = "/Scheduler/ListGroupMembersInfo";
-                var optionsData = { groupId: $('#groupSelect').find(':selected').val() };
+                var optionsData = { groupId: $('#groupNESelect').find(':selected').val() };
                 $.ajax({
                     type: "GET",
                     url: listGroupMembersUrl,
                     data: optionsData,
                     success: function (result) {
-                        var outerDiv = document.getElementById("groupMembersWrapper");
+                        var outerDiv = document.getElementById("groupMembersNEWrapper");
                         while (outerDiv.firstChild) {
                             outerDiv.removeChild(outerDiv.firstChild);
                         }
@@ -653,7 +655,7 @@ function initializeSelectGroup() {
                         var outerLabel = document.createElement("label");
                         outerLabel.classList.add("control-label");
                         outerLabel.setAttribute("for", "ParticipantIds");
-                        outerLabel.innerHTML = "Invite your friends:";
+                        outerLabel.innerHTML = "Attach your friends:";
                         outerDiv.appendChild(outerLabel);
 
                         result.forEach((value, index, array) => {

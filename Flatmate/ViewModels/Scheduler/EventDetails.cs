@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Flatmate.ViewModels.Scheduler
 {
+    //TODO: remove inheritance
     public class EventDetails : ScheduledEvent
     {
         public int GroupId { get; set; }

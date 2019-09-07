@@ -12,12 +12,12 @@
         <form asp-action="NewRecurringExpense">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="BillSubject" class="control-label"></label>
+                <label asp-for="BillSubject"></label>
                 <input asp-for="BillSubject" class="form-control" />
                 <span asp-validation-for="BillSubject" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Value" class="control-label"></label>
+                <label asp-for="Value"></label>
                 <input asp-for="Value" class="form-control" />
                 <span asp-validation-for="Value" class="text-danger"></span>
             </div>
@@ -27,7 +27,7 @@
                 <option>Frequency</option>
             </select>
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
+                <label asp-for="StartDate"></label>
                 <input asp-for="StartDate" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>

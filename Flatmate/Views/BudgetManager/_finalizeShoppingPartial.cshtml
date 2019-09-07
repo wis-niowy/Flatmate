@@ -1,0 +1,71 @@
+﻿@model Flatmate.ViewModels.BudgetManager.ShoppingFinalizationViewModel
+@{ 
+    string participantChargeInputId, isChargePaidId;
+}
+<div class="card" id="finalizeShoppingDiv">
+    <div class="h5 card-header text-center grey lighten-2">
+        <i class="fas fa-angle-double-left mr-2 text-white"></i>
+        @Model.Subject
+        <i class="fas fa-angle-double-right ml-2 text-white"></i>
+    </div>
+    <div class="card-body">
+        <h6 class="text-center">Summary</h6>
+        <hr />
+        <form id="FinalizeShoppingForm" asp-action="FinalizeShopping">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="GroupId" type="hidden" />
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <label asp-for="SingleElementDescriptions" class="font-weight-bold">Your list: </label>
+            <ul class="shopping-list">
+                @foreach (var sed in Model.SingleElementDescriptions)
+                {
+                    <li>
+                        @sed
+                    </li>
+                }
+            </ul>
+            <label asp-for="ExpenseCategory" class="col-lg-5"><small class="font-weight-bold">Expense category:</small><br /> @Model.ExpenseCategory</label>
+            <label asp-for="GroupName" class="col-lg-5"><small class="font-weight-bold">Group:</small><br /> @Model.GroupName</label>
+            <hr />
+            @*TODO: remove 'control-label' class from all elements*@
+            <div class="form-group">
+                <label asp-for="Value" class="col-lg-4">Total value:</label>
+                <input asp-for="Value" class="col-lg-7 d-inline form-control form-control-sm" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="form-check-inline col-lg-6">
+                <input id="divideBillEquallyCheckbox" type="checkbox" class="my-3 form-check-input" /><small> Divide charge equally</small>
+            </div>
+            <div class="form-check-inline col-lg-5">
+                <input asp-for="IsCovered" type="checkbox" class="my-3 form-check-input" /><small>Mark this bill as settled</small>
+                <span asp-validation-for="IsCovered" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="mt-3" id="groupMembersSFWrapper">
+                @for (int i = 0; i < Model.ParticipantIds.Length; i++)
+                {
+                    participantChargeInputId = "participantCharge-" + i.ToString();
+                    isChargePaidId = "isChargePaid-" + i.ToString();
+
+                    <div class="form-group">
+                        <div class="font-weight-bold">@Model.ParticipantNames[i]</div>
+                        <div>
+                            <label asp-for="ParticipantsCharge[i]" class="px-1 col-lg-3"><small>Charge value:</small></label>
+                            <input id="@participantChargeInputId" asp-for="ParticipantsCharge[i]"
+                                   class="col-lg-4 mr-lg-3 d-inline form-control form-control-sm" />
+                            <label class="px-1 col-lg-4 pl-lg-3 big-screen-left-border form-check-inline">
+                                <input type="checkbox" asp-for="DidParticipantsPay[i]" class="my-3 form-check-input" />
+                                <small>Bill was settled</small>
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="d-flex card-footer justify-content-between">
+        <button class="w-50 btn btn-dark" data-dismiss="card">Close</button>
+        <button id="btnSubmit" type="submit" data-save="card" class="w-50 btn btn-dark">Ready!</button>
+    </div>
+</div>

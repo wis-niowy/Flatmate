@@ -26,7 +26,26 @@ namespace Flatmate.Controllers
             //var teams = await _context.Teams.ToListAsync();
             return View();
         }
+        public async Task<IActionResult> ListGroupInfo(int userId)
+        {
+            return Json(await _context.Teams
+                .Where(t => t.UserAssignments.Any(u => u.UserId == userId))
+                .AsNoTracking()
+                .ToListAsync());
+        }
 
+        public async Task<IActionResult> ListGroupMembersInfo(int groupId)
+        {
+            var groupMembers = (from ut in _context.UserPerTeams
+                                where ut.TeamId == groupId
+                                select ut.UserId).ToList();
+
+            return Json(await _context.Users
+                .Where(u => groupMembers.Any(gm => gm == u.Id))
+                .AsNoTracking()
+                .Select(u => new { u.Id, u.FullName })
+                .ToListAsync());
+        }
         // GET: Teams/Details/5
         public async Task<IActionResult> Details(int? id)
         {

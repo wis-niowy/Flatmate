@@ -79,14 +79,10 @@ namespace Flatmate.Controllers
             return plannedShoppingInformations;
         }
         private List<EventDetails> GenerateEventDetails(int currentUserId, int displayedNumberOfDays)
-        {
-            var currentUserGroupIds = _context.UserPerTeams
-                .Where(upt => upt.UserId == currentUserId)
-                .Select(upt => upt.TeamId);
-            
+        {            
             var upcomingEventsInfo = _context.ScheduledEvents
                 .Include(se => se.AttachedUsersCollection)
-                .Where(se => currentUserGroupIds.Any(ugi => se.AttachedUsersCollection.Any(auc => auc.TeamId == ugi)) && DateTime.Compare(se.StartDate, DateTime.Now.AddDays(displayedNumberOfDays)) <= 0)
+                .Where(se => se.AttachedUsersCollection.Any(auc => auc.UserId == currentUserId) && DateTime.Compare(se.StartDate, DateTime.Now.AddDays(displayedNumberOfDays)) <= 0)
                 .AsNoTracking();
 
             var usersInfo = _context.Users

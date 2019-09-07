@@ -19,30 +19,30 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input asp-for="Id" type="hidden" />
                     <div class="form-group">
-                        <label asp-for="Title" class="control-label">Event title:</label>
+                        <label asp-for="Title">Event title:</label>
                         <input asp-for="Title" class="form-control" disabled />
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Description" class="control-label">Event description:</label>
+                        <label asp-for="Description">Event description:</label>
                         <textarea asp-for="Description" class="form-control" disabled></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="form-check-inline">
-                        <label asp-for="IsBlocking" class="control-label">
+                        <label asp-for="IsBlocking">
                             <input asp-for="IsBlocking" type="checkbox" class="my-3 form-check-input" disabled />Block other activities during selected period?
                         </label>
                         <span asp-validation-for="IsBlocking" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="StartDate" class="control-label">Event starts at:</label>
+                        <label asp-for="StartDate">Event starts at:</label>
                         <div class="input-group date" id="startDateEventDetails" data-target-input="nearest">
                             <input asp-for="StartDate" type="text" class="form-control datetimepicker-input" data-target="#startDateEventDetails" disabled />
                         </div>
                         <span asp-validation-for="StartDate" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="EndDate" class="control-label">Event ends at:</label>
+                        <label asp-for="EndDate">Event ends at:</label>
                         <div class="input-group date" id="endDateEventDetails" data-target-input="nearest">
                             <input asp-for="EndDate" type="text" class="form-control datetimepicker-input" data-target="#endDateEventDetails" disabled />
                         </div>
@@ -50,7 +50,7 @@
                     </div>
                     <div class="form-group">
                         <input asp-for="GroupId" type="hidden" />
-                        <label id="groupLabel" asp-for="GroupId" class="control-label">Selected group: @Model.GroupName</label>
+                        <label id="groupLabel" asp-for="GroupId">Selected group: @Model.GroupName</label>
                     </div>
                     <div class="mt-3" id="eventParticipantsWrapper">
                         <label>Participants: </label>
