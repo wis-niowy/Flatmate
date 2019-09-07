@@ -42,7 +42,7 @@ namespace Flatmate.Controllers
             var currentUserId = 1;
 
             var plannedShoppingInformations = GenerateShoppingInformation(currentUserId);
-            return PartialView("_plannedShoppingPartial", plannedShoppingInformations);
+            return PartialView("_plannedShoppingHomePartial", plannedShoppingInformations);
         }
         public IActionResult ListSettlementInformation()
         {

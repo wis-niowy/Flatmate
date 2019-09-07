@@ -1,15 +1,15 @@
 ﻿function generateBudgetManagerView() {
     $(document).ready(function () {
-        var dashboardGenerationInfo = getDashboardGenerationInfo();
+        var dashboardGenerationInfo = getManagerGenerationInfo();
         dashboardGenerationInfo.forEach((value, index, array) => {
-            generateModuleInfo(value.actionUrl, value.actionData, value.placeholderElement);
+            generateManagerModuleInfo(value.actionUrl, value.actionData, value.placeholderElement);
         });
         initializeCardsCancel();
         initializeFormCheckboxes();
         initializeNewSLModal();
     });
 }
-function getDashboardGenerationInfo() {
+function getManagerGenerationInfo() {
 
     var dashboardGenerationData = [
         {
@@ -21,7 +21,7 @@ function getDashboardGenerationInfo() {
 
     return dashboardGenerationData;
 }
-function generateModuleInfo(actionUrl, actionData, placeholderElement) {
+function generateManagerModuleInfo(actionUrl, actionData, placeholderElement) {
     $.ajax({
         type: "GET",
         url: actionUrl,

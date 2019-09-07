@@ -5,7 +5,7 @@ function generateDashboardView() {
     $(document).ready(function () {
         var dashboardGenerationInfo = getDashboardGenerationInfo();
         dashboardGenerationInfo.forEach((value, index, array) => {
-            generateModuleInfo(value.actionUrl, value.actionData, value.placeholderElement);
+            generateHomeModuleInfo(value.actionUrl, value.actionData, value.placeholderElement);
         });
         addNewEventPeriodSelectionHandler();
     });
@@ -39,7 +39,7 @@ function getDashboardGenerationInfo() {
     return dashboardGenerationInfo;
 }
 
-function generateModuleInfo(actionUrl, actionData, placeholderElement) {
+function generateHomeModuleInfo(actionUrl, actionData, placeholderElement) {
     $.ajax({
         type: "GET",
         url: actionUrl,
