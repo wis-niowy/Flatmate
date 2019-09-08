@@ -88,10 +88,56 @@ namespace Flatmate.Controllers
 
             return finalizationModel;
         }
+
         [HttpPost]
-        public IActionResult FinalizeShopping([Bind("")] ShoppingFinalizationViewModel sfvm)
+        [ValidateAntiForgeryToken]
+        public IActionResult FinalizeShopping([Bind("Id, Subject, Value, IsCovered, ExpenseCategory, GroupId, ParticipantIds, ParticipantsCharge, DidParticipantsPay")] ShoppingFinalizationViewModel sfvm)
         {
-            return null;
+            //TODO:check validation after adding it
+            if (ModelState.IsValid)
+            {
+                //TODO: change to currentuserId
+                var currentUserId = 1;
+                
+                bool isCovered = sfvm.IsCovered ? true : sfvm.DidParticipantsPay.All(pc => pc == true);
+                
+                var totalExpense = new TotalExpense
+                {
+                    Covered = isCovered,
+                    FinalizationDate = DateTime.Now,
+                    OwnerId = currentUserId,
+                    ExpenseCategory = sfvm.ExpenseCategory,
+                    Subject = sfvm.Subject,
+                    Value = sfvm.Value
+                };
+
+                _context.TotalExpenses.Add(totalExpense);
+                _context.SaveChanges();
+
+                var partialExpenses = new List<PartialExpense>();
+
+                for (int i = 0; i < sfvm.ParticipantIds.Length; i++)
+                {
+                    partialExpenses.Add(new PartialExpense
+                    {
+                        Covered = sfvm.DidParticipantsPay[i],
+                        TeamId = sfvm.GroupId,
+                        TotalExpenseId = totalExpense.Id,
+                        UserId = sfvm.ParticipantIds[i],
+                        Value = sfvm.ParticipantsCharge[i]
+                    });
+                }
+
+                _context.PartialExpenses.AddRange(partialExpenses);
+                _context.SaveChanges();
+
+                _context.ComplexOrders.Remove(new SingleComplexOrder { Id = sfvm.Id });
+                _context.SaveChanges();
+
+                return RedirectToAction("Index", "BudgetManager", new { id = currentUserId });
+            }
+
+            return PartialView("_finalizeShoppingPartial", sfvm);
         }
         public IActionResult ShoppingRemoval(int orderId)
         {
@@ -149,6 +195,42 @@ namespace Flatmate.Controllers
             };
 
             return removalModel;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteShopping([Bind("Id")] ShoppingRemovalViewModel srvm)
+        {
+            //TODO:check validation after adding it
+            if (ModelState.IsValid)
+            {
+                var dbSingleElements = _context.OrderElements
+                    .Where(oe => oe.SCOId == srvm.Id)
+                    .ToList();
+
+                //var singleElements = new List<SingleOrderElement>();
+                //foreach(var element in dbSingleElements)
+                //{
+                //    singleElements.Add(new SingleOrderElement { Id = element.Id });
+                //}
+
+                _context.OrderElements.RemoveRange(dbSingleElements);
+                _context.SaveChanges();
+
+                var dbSCOutas = _context.OrdersAssignments
+                    .Where(oa => oa.SCOId == srvm.Id)
+                    .ToList();
+
+                _context.OrdersAssignments.RemoveRange(dbSCOutas);
+                _context.SaveChanges();
+                
+                _context.ComplexOrders.Remove(new SingleComplexOrder { Id = srvm.Id });
+                _context.SaveChanges();
+
+                return RedirectToAction("Index", "BudgetManager", null);
+            }
+
+            return PartialView("_finalizeShoppingPartial", srvm);
         }
         public IActionResult ListShoppingInformation()
         {
@@ -237,7 +319,7 @@ namespace Flatmate.Controllers
                 _context.SaveChanges();
 
                 //TODO: change for the currentUserId
-                return RedirectToAction("Index", "BudgetManager", new { id = currentUserId });
+                return RedirectToAction("Index", "BudgetManager", null);
             }
             return PartialView("_createNewShoppingListPartial", scvm);
         }
@@ -245,137 +327,6 @@ namespace Flatmate.Controllers
         public IActionResult ListUnitValues()
         {
             return Json(Enum.GetNames(typeof(Unit)));
-        }
-
-        // GET: BudgetManager/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var totalExpense = await _context.TotalExpenses
-                .Include(t => t.Owner)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (totalExpense == null)
-            {
-                return NotFound();
-            }
-
-            return View(totalExpense);
-        }
-
-        // GET: BudgetManager/Create
-        public IActionResult Create()
-        {
-            ViewData["OwnerId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
-        }
-
-        // POST: BudgetManager/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Subject,FinalizationDate,Value,Covered,ExpenseCategory,OwnerId")] TotalExpense totalExpense)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(totalExpense);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["OwnerId"] = new SelectList(_context.Users, "Id", "Id", totalExpense.OwnerId);
-            return View(totalExpense);
-        }
-
-        // GET: BudgetManager/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var totalExpense = await _context.TotalExpenses.FindAsync(id);
-            if (totalExpense == null)
-            {
-                return NotFound();
-            }
-            ViewData["OwnerId"] = new SelectList(_context.Users, "Id", "Id", totalExpense.OwnerId);
-            return View(totalExpense);
-        }
-
-        // POST: BudgetManager/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Subject,FinalizationDate,Value,Covered,ExpenseCategory,OwnerId")] TotalExpense totalExpense)
-        {
-            if (id != totalExpense.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(totalExpense);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TotalExpenseExists(totalExpense.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["OwnerId"] = new SelectList(_context.Users, "Id", "Id", totalExpense.OwnerId);
-            return View(totalExpense);
-        }
-
-        // GET: BudgetManager/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var totalExpense = await _context.TotalExpenses
-                .Include(t => t.Owner)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (totalExpense == null)
-            {
-                return NotFound();
-            }
-
-            return View(totalExpense);
-        }
-
-        // POST: BudgetManager/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var totalExpense = await _context.TotalExpenses.FindAsync(id);
-            _context.TotalExpenses.Remove(totalExpense);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TotalExpenseExists(int id)
-        {
-            return _context.TotalExpenses.Any(e => e.Id == id);
         }
     }
 }

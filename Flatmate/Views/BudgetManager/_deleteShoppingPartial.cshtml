@@ -1,5 +1,6 @@
 ﻿@model Flatmate.ViewModels.BudgetManager.ShoppingRemovalViewModel
-<div class="card" id="finalizeShoppingDiv">
+
+<div class="card" id="deleteShoppingDiv">
     <div class="h5 card-header text-center grey lighten-2">
         <i class="fas fa-angle-double-left mr-2 text-white"></i>
         Confirm delete
@@ -8,9 +9,8 @@
     <div class="card-body">
         <h6 class="text-center">Summary</h6>
         <hr />
-        <form id="FinalizeShoppingForm" asp-action="FinalizeShopping">
+        <form id="RemovalShoppingForm" asp-action="DeleteShopping">
             <input asp-for="Id" type="hidden" />
-            <input asp-for="GroupId" type="hidden" />
             <label asp-for="Subject" class="font-weight-bold">@Model.Subject</label>
             <label asp-for="SingleElementDescriptions" class="d-block">Your list: </label>
             <ul class="shopping-list">
@@ -38,6 +38,6 @@
     </div>
     <div class="d-flex card-footer justify-content-between">
         <button class="w-50 btn btn-dark" data-dismiss="card">Close</button>
-        <button id="btnSubmit" type="submit" data-save="card" class="w-50 btn btn-dark">Delete</button>
+        <button id="btnSubmit" type="submit" data-delete="card" class="w-50 btn btn-dark">Delete</button>
     </div>
 </div>

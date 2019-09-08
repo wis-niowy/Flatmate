@@ -39,8 +39,70 @@ function activateFinalizeCard(shoppingOrderId) {
     var placeholderElement = $('#shoppingDetailsDiv');
 
     cleanPlaceholder(placeholderElement);
-    generateModuleInfo(actionUrl, actionData, placeholderElement);
+
+    $.ajax({
+        type: "GET",
+        url: actionUrl,
+        data: actionData,
+        success: function (result) {
+            placeholderElement.html(result);
+
+            var checkboxes = $('#groupMembersSFWrapper input[type="checkbox"]');
+            console.log(checkboxes);
+            checkboxes.each((index, element) => {
+                element.addEventListener('change', function () {
+                    const currentValue = $('#hidden-' + index).val();
+                    if (currentValue === "false") {
+                        $('#hidden-' + index).val("true");
+                    }
+                    else {
+                        $('#hidden-' + index).val("false");
+                    }
+                });
+            });
+        }
+    });
+    
+    placeholderElement.on('click', '[data-save="card"]', function (event) {
+        event.preventDefault();
+
+        var form = $(this).parents('.card').find('form');
+        var actionUrl = form.attr('action');
+        var primaryData = form.serializeArray();
+
+        var dataToSend = [];
+        primaryData.forEach((value, index, array) => {
+            var singleDataElement = {};
+            if (value.name.match(/Value|ParticipantsCharge/)) {
+                var formattedString = value.value.replace(/\./g, ",");
+                singleDataElement.name = value.name;
+                singleDataElement.value = formattedString;
+            }
+            else {
+                singleDataElement.name = value.name;
+                singleDataElement.value = value.value;
+            }
+
+            if (Object.entries(singleDataElement).length !== 0 && singleDataElement.value !== 'on') {
+                dataToSend.push(singleDataElement);
+            }
+        });
+        
+        $.post(actionUrl, dataToSend).done(function (data) {
+            cleanPlaceholder(placeholderElement);
+            cleanPlaceholder($('#plannedShoppingDiv'));
+
+            var actionUrl = '/BudgetManager/ListShoppingInformation';
+            var actionData = {};
+            var shoppingListPlaceholder = $('#plannedShoppingDiv');
+            generateManagerModuleInfo(actionUrl, actionData, shoppingListPlaceholder);
+        });
+    });
 } 
+
+
+
+
 function activateDeleteCard(shoppingOrderId) {
     var actionUrl = '/BudgetManager/ShoppingRemoval';
     var actionData = {
@@ -49,7 +111,28 @@ function activateDeleteCard(shoppingOrderId) {
     var placeholderElement = $('#shoppingDetailsDiv');
 
     cleanPlaceholder(placeholderElement);
-    generateModuleInfo(actionUrl, actionData, placeholderElement);
+    generateManagerModuleInfo(actionUrl, actionData, placeholderElement);
+
+    placeholderElement.on('click', '[data-delete="card"]', function (event) {
+        event.preventDefault();
+
+        var form = $(this).parents('.card').find('form');
+        var actionUrl = form.attr('action');
+        var actionData = form.serializeArray();
+
+        //TODO: check if working for bad values - modal shouldn't hide
+        $.post(actionUrl, actionData).done(function (data) {
+            var shoppingListPlaceholder = $('#plannedShoppingDiv');
+
+            cleanPlaceholder(placeholderElement);
+            cleanPlaceholder(shoppingListPlaceholder);
+
+            var actionUrl = '/BudgetManager/ListShoppingInformation';
+            var actionData = {};
+            generateManagerModuleInfo(actionUrl, actionData, shoppingListPlaceholder);
+        });
+
+    });
 
 }
 function cleanPlaceholder(placeholderElement) {
@@ -76,13 +159,13 @@ function initializeDivideBillEqually() {
         event.preventDefault();
         
         var isDivideEquallyChecked = $('#divideBillEquallyCheckbox').prop('checked');
-        var participantBillingInputs = $('#groupMembersSFWrapper input[type="text"]');
+        var participantBillingInputs = $('#groupMembersSFWrapper input').not('[type="checkbox"], [type="hidden"]');
         var participantInputsLength = participantBillingInputs.length;
         var valueInput = $('#Value');
 
         var setChargeValues = function () {
             participantBillingInputs.each((index, element) => {
-                element.setAttribute('disabled', 'disabled');
+                element.setAttribute('readonly', true);
                 
                 var initialValue = (valueInput.val() / participantInputsLength).toFixed(2);
                 var dividedValue = isNaN(initialValue) ? 0.00 : parseFloat(initialValue);
@@ -103,12 +186,24 @@ function initializeDivideBillEqually() {
         }
         else {
             participantBillingInputs.each((index, element) => {
-                element.removeAttribute('disabled');
+                element.removeAttribute('readonly');
             });
             valueInput.off('change', setChargeValues);
         }
     });
 }
+
+function changeChargeInput(hiddenElementId) {
+    const currentValue = $('#' + hiddenElementId).val();
+    console.log(hiddenElementId + ' ' + currentValue);
+    if (currentValue === "false") {
+        $('#' + hiddenElementId).val("true");
+    }
+    else {
+        $('#' + hiddenElementId).val("false");
+    }
+}
+
 function initializeSettleWholeBillCheckboxes() {
     var shoppingDetailsDiv = $('#shoppingDetailsDiv');
 
@@ -224,6 +319,7 @@ function initializeNewSLModal() {
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');
         var primaryData = form.serializeArray();
+        console.log(form);
         console.log(primaryData);
 
         var dataToSend = [];
@@ -235,8 +331,15 @@ function initializeNewSLModal() {
                 singleDataElement.value = parseInt(idString[1]);
             }
             else {
-                singleDataElement.name = value.name;
-                singleDataElement.value = value.value;
+                if (value.name.match(/SingleElementAmounts/)) {
+                    var formattedString = value.value.replace(/\./g, ",");
+                    singleDataElement.name = value.name;
+                    singleDataElement.value = formattedString;
+                }
+                else {
+                    singleDataElement.name = value.name;
+                    singleDataElement.value = value.value;
+                }
             }
 
             if (Object.entries(singleDataElement).length !== 0) {
@@ -246,15 +349,17 @@ function initializeNewSLModal() {
 
         //TODO: check if working for bad values - modal shouldn't hide
         $.post(actionUrl, dataToSend).done(function (data) {
-            console.log(data);
-            placeholderElement.find('#modalNewShoppingListCreate').modal('hide');            
+            placeholderElement.find('#modalNewShoppingListCreate').modal('hide');        
+
+            cleanPlaceholder($('#plannedShoppingDiv'));
+
+            var actionUrl = '/BudgetManager/ListShoppingInformation';
+            var actionData = {};
+            var shoppingListPlaceholder = $('#plannedShoppingDiv');
+            generateManagerModuleInfo(actionUrl, actionData, shoppingListPlaceholder);
         });
     });
-
-    placeholderElement.on('change', '[name=SingleElementAmounts]', function (event) {
-        convertInputValueToDoubleOnChange(event.target);
-    });
-
+    
     placeholderElement.on('hidden.bs.modal', '.modal', function (event) {
         placeholderElement.find('.modal').remove();
     });
@@ -327,17 +432,6 @@ function initializeAddSingleElementButton() {
         mainElementdiv.appendChild(deleteElementButton);
         singleElementWrapper.append(mainElementdiv);
     });
-}
-
-function convertInputValueToDoubleOnChange(eventTarget) {
-    var insertedValue = eventTarget.value;
-    if (isNaN(parseFloat(insertedValue))) {
-        eventTarget.value = 0;
-    }
-    else {
-        var parsedValue = insertedValue.replace(/\./g, ',');
-        eventTarget.value = parsedValue;
-    }
 }
 
 function listSelectUnitOptions() {
