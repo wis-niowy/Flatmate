@@ -272,18 +272,6 @@ namespace Flatmate.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == groupId));
         }
-        public async Task<IActionResult> ListGroupMembersInfo(int groupId)
-        {
-            var groupMembers = (from ut in _context.UserPerTeams
-                                where ut.TeamId == groupId
-                                select ut.UserId).ToList();
-            
-            return Json(await _context.Users
-                .Where(u => groupMembers.Any(gm => gm == u.Id))
-                .AsNoTracking()
-                .Select(u => new { u.Id, u.FullName })
-                .ToListAsync());
-        }
 
         public IActionResult NewEventPartial()
         {

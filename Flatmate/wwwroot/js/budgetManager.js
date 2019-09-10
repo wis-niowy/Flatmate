@@ -4,9 +4,11 @@
         dashboardGenerationInfo.forEach((value, index, array) => {
             generateManagerModuleInfo(value.actionUrl, value.actionData, value.placeholderElement);
         });
+
         initializeCardsCancel();
         initializeFormCheckboxes();
         initializeNewSLModal();
+        initializeNewRBModal();
     });
 }
 function getManagerGenerationInfo() {
@@ -16,7 +18,12 @@ function getManagerGenerationInfo() {
             actionUrl: '/BudgetManager/ListShoppingInformation',
             actionData: {},
             placeholderElement: $('#plannedShoppingDiv')
-        }
+        },
+        {
+            actionUrl: '/BudgetManager/ListRecurringBills',
+            actionData: {},
+            placeholderElement: $('#rbsInProgressDiv')
+        },
     ];
 
     return dashboardGenerationData;
@@ -31,7 +38,7 @@ function generateManagerModuleInfo(actionUrl, actionData, placeholderElement) {
         }
     });
 }
-function activateFinalizeCard(shoppingOrderId) {
+function activateFinalizeSLCard(shoppingOrderId) {
     var actionUrl = '/BudgetManager/ShoppingFinalization';
     var actionData = {
         orderId: shoppingOrderId
@@ -98,12 +105,8 @@ function activateFinalizeCard(shoppingOrderId) {
             generateManagerModuleInfo(actionUrl, actionData, shoppingListPlaceholder);
         });
     });
-} 
-
-
-
-
-function activateDeleteCard(shoppingOrderId) {
+}
+function activateDeleteSLCard(shoppingOrderId) {
     var actionUrl = '/BudgetManager/ShoppingRemoval';
     var actionData = {
         orderId: shoppingOrderId
@@ -131,9 +134,191 @@ function activateDeleteCard(shoppingOrderId) {
             var actionData = {};
             generateManagerModuleInfo(actionUrl, actionData, shoppingListPlaceholder);
         });
+    });
+}
+function activateEditRBCard(recurringBillId) {
+    var actionUrl = '/BudgetManager/BillEdit';
+    var actionData = {
+        RBId: recurringBillId
+    };
+    var placeholderElement = $('#rbDetailsDiv');
 
+    cleanPlaceholder(placeholderElement);
+
+    $.ajax({
+        type: "GET",
+        url: actionUrl,
+        data: actionData,
+        success: function (result) {
+            placeholderElement.html(result);
+
+            var groupId = $('#GroupId').val();
+            var startDateDTPSelector = '#startDateEditRB';
+            var endDateDTPSelector = '#endDateEditRB';
+
+            var startDateInput = document.getElementById('StartDate');
+            var endDateInput = document.getElementById('ExpirationDate');
+            var parsedStartDate = parseToDatepickersDate(startDateInput.value);
+            var parsedEndDate = parseToDatepickersDate(endDateInput.value);
+            startDateInput.value = parsedStartDate;
+            endDateInput.value = parsedEndDate;
+            initializeDatePickersWithInitialDates(startDateDTPSelector, endDateDTPSelector, parsedStartDate, parsedEndDate);
+
+            generateChooseUsersList(groupId);            
+        }
     });
 
+    placeholderElement.on('click', '[data-edit="card"]', function (event) {
+        event.preventDefault();
+
+        var form = $(this).parents('.card').find('form');
+        var actionUrl = form.attr('action');
+        var primaryData = form.serializeArray();
+
+        var dataToSend = [];
+        primaryData.forEach((value, index, array) => {
+            var singleDataElement = {};
+            if (value.name.match(/Value/)) {
+                var formattedString = value.value.replace(/\./g, ",");
+                singleDataElement.name = value.name;
+                singleDataElement.value = formattedString;
+            }
+            else {
+                if (value.name.match(/ParticipantIds/)) {
+                    var idString = value.name.split('-');
+                    singleDataElement.name = "ParticipantIds";
+                    singleDataElement.value = parseInt(idString[1]);
+                }
+                else {
+                    singleDataElement.name = value.name;
+                    switch (value.name) {
+                        case 'StartDate':
+                        case 'Expirationdate':
+                            singleDataElement.value = parseDatepickersDate(value.value);
+                            break;
+                        default:
+                            singleDataElement.value = value.value;
+                            break;
+                    }
+                }
+            }
+
+            if (Object.entries(singleDataElement).length !== 0) {
+                dataToSend.push(singleDataElement);
+            }
+        });
+
+        $.post(actionUrl, dataToSend).done(function (data) {
+            var billsListPlaceholder = $('#rbsInProgressDiv');
+
+            cleanPlaceholder(placeholderElement);
+            cleanPlaceholder(billsListPlaceholder);
+
+            var actionUrl = '/BudgetManager/ListRecurringBills';
+            var actionData = {};
+            generateManagerModuleInfo(actionUrl, actionData, billsListPlaceholder);
+        });
+    });
+}
+function activateDeleteRBCard(recurringBillId) {
+    var actionUrl = '/BudgetManager/BillRemoval';
+    var actionData = {
+        RBId: recurringBillId
+    };
+    var placeholderElement = $('#rbDetailsDiv');
+
+    cleanPlaceholder(placeholderElement);
+    generateManagerModuleInfo(actionUrl, actionData, placeholderElement);
+
+    placeholderElement.on('click', '[data-delete="card"]', function (event) {
+        event.preventDefault();
+
+        var form = $(this).parents('.card').find('form');
+        var deleteBillUrl = form.attr('action');
+        var deleteBillData = { billId: document.getElementById('Id').value };
+
+        console.log(deleteBillUrl);
+        //TODO: check if working for bad values - modal shouldn't hide
+        $.ajax({
+            type: "DELETE",
+            url: deleteBillUrl,
+            data: deleteBillData,
+            success: function () {
+                var billsListPlaceholder = $('#rbsInProgressDiv');
+
+                cleanPlaceholder(placeholderElement);
+                cleanPlaceholder(billsListPlaceholder);
+
+                var actionUrl = '/BudgetManager/ListRecurringBills';
+                var actionData = {};
+                generateManagerModuleInfo(actionUrl, actionData, billsListPlaceholder);
+            }
+        });
+    });
+}
+function initializeNewRBModal() {
+    var placeholderElement = $('#new-bill-modal-placeholder');
+
+    $('button[data-toggle="ajax-recurring-bill-modal"]').click(function (event) {
+        var url = $(this).data('url');
+        $.get(url).done(function (data) {
+            placeholderElement.html(data);
+            initializeDatePickers('#startDateNewRB', '#endDateNewRB');
+            initializeNewItemSelectGroup('groupNRBSelect', 'groupMembersNRBWrapper');
+            placeholderElement.find('#modalNewRBCreate').modal('show');
+        });
+    });
+
+    placeholderElement.on('click', '[data-save="modal"]', function (event) {
+        event.preventDefault();
+
+        var form = $(this).parents('.modal').find('form');
+        var actionUrl = form.attr('action');
+        var primaryData = form.serializeArray();
+        console.log(form);
+        console.log(primaryData);
+
+        var dataToSend = [];
+        primaryData.forEach((value, index, array) => {
+            var singleDataElement = {};
+            if (value.name.match(/ParticipantIds/)) {
+                var idString = value.name.split('-');
+                singleDataElement.name = "ParticipantIds";
+                singleDataElement.value = parseInt(idString[1]);
+            }
+            else {
+                singleDataElement.name = value.name;
+                switch (value.name) {
+                    case 'StartDate':
+                    case 'ExpirationDate':
+                        singleDataElement.value = parseDatepickersDate(value.value);
+                        break;
+                    default:
+                        singleDataElement.value = value.value;
+                        break;
+                }
+            }
+
+            if (Object.entries(singleDataElement).length !== 0) {
+                dataToSend.push(singleDataElement);
+            }
+        });
+
+        //TODO: check if working for bad values - modal shouldn't hide
+        $.post(actionUrl, dataToSend).done(function (data) {
+            var billingListPlaceholder = $('#rbsInProgressDiv');
+            placeholderElement.find('#modalNewRBCreate').modal('hide');
+            cleanPlaceholder(billingListPlaceholder);
+
+            var actionUrl = '/BudgetManager/ListRecurringBills';
+            var actionData = {};
+            generateManagerModuleInfo(actionUrl, actionData, billingListPlaceholder);
+        });
+    });
+
+    placeholderElement.on('hidden.bs.modal', '.modal', function (event) {
+        placeholderElement.find('.modal').remove();
+    });
 }
 function cleanPlaceholder(placeholderElement) {
     placeholderElement.empty();
@@ -142,9 +327,9 @@ function initializeCardsCancel() {
     var placeholderElements = getCardsPlaceholders();
 
     placeholderElements.forEach((value, index, array) => {
-        value.placeholderElement.on('click', '[data-dismiss="card"]', function (event) {
+        value.on('click', '[data-dismiss="card"]', function (event) {
             event.preventDefault();
-            value.placeholderElement.empty();
+            value.empty();
         });
     });
 }
@@ -192,7 +377,6 @@ function initializeDivideBillEqually() {
         }
     });
 }
-
 function changeChargeInput(hiddenElementId) {
     const currentValue = $('#' + hiddenElementId).val();
     console.log(hiddenElementId + ' ' + currentValue);
@@ -203,7 +387,47 @@ function changeChargeInput(hiddenElementId) {
         $('#' + hiddenElementId).val("false");
     }
 }
+function generateChooseUsersList(groupId) {
+    var listGroupMembersUrl = "/Teams/ListGroupMembersInfo";
+    var optionsData = { groupId: groupId };
+    $.ajax({
+        type: "GET",
+        url: listGroupMembersUrl,
+        data: optionsData,
+        success: function (result) {
+            var outerDiv = document.getElementById("groupMembersRBEWrapper");
 
+            var outerLabel = document.createElement("label");
+            outerLabel.classList.add("control-label");
+            outerLabel.setAttribute("for", "ParticipantIds");
+            outerLabel.innerHTML = "Attach your friends:";
+            outerDiv.appendChild(outerLabel);
+
+            result.forEach((value, index, array) => {
+                var currentUserId = "1";
+                if (value.id.toString() === currentUserId) {
+                    return;
+                }
+                var groupMembersDiv = document.createElement("div");
+                groupMembersDiv.classList.add("form-check");
+
+                var divLabel = document.createElement("label");
+                divLabel.classList.add("form-check-label");
+
+                var inputElem = document.createElement("input");
+                inputElem.setAttribute('type', 'radio');
+                inputElem.setAttribute('name', 'ParticipantIds' + '-' + value["id"]);
+                inputElem.classList.add("form-check-input");
+
+                divLabel.appendChild(inputElem);
+                divLabel.append(value["fullName"]);
+                groupMembersDiv.appendChild(divLabel);
+
+                outerDiv.appendChild(groupMembersDiv);
+            });
+        }
+    });
+}
 function initializeSettleWholeBillCheckboxes() {
     var shoppingDetailsDiv = $('#shoppingDetailsDiv');
 
@@ -230,75 +454,11 @@ function initializeSettleWholeBillCheckboxes() {
 }
 function getCardsPlaceholders() {
     var placeholderElements = [
-        {
-            placeholderElement: $('#shoppingDetailsDiv')
-        }];
+        $('#shoppingDetailsDiv'),
+        $('#rbDetailsDiv')
+    ];
 
     return placeholderElements;
-}
-function initializeSelectGroup() {
-    var listGroupInfoUrl = "/Teams/ListGroupInfo";
-    //TODO: change to current user id
-    var currentUserId = "1";
-    var selectData = { userId: currentUserId };
-    $.ajax({
-        type: "GET",
-        url: listGroupInfoUrl,
-        data: selectData,
-        success: function (result) {
-            var groupSelect = document.getElementById("groupSCSelect");
-            result.forEach((value, index, array) => {
-                var selectOption = document.createElement("option");
-                selectOption.text = value["name"];
-                selectOption.value = value["id"];
-                groupSelect.appendChild(selectOption);
-            });
-
-            $("#groupSCSelect").on('change', function () {
-                var listGroupMembersUrl = "/Teams/ListGroupMembersInfo";
-                var optionsData = { groupId: $('#groupSCSelect').find(':selected').val() };
-                $.ajax({
-                    type: "GET",
-                    url: listGroupMembersUrl,
-                    data: optionsData,
-                    success: function (result) {
-                        var outerDiv = document.getElementById("groupMembersSCWrapper");
-                        while (outerDiv.firstChild) {
-                            outerDiv.removeChild(outerDiv.firstChild);
-                        }
-
-                        var outerLabel = document.createElement("label");
-                        outerLabel.classList.add("control-label");
-                        outerLabel.setAttribute("for", "ParticipantIds");
-                        outerLabel.innerHTML = "Attach your friends:";
-                        outerDiv.appendChild(outerLabel);
-
-                        result.forEach((value, index, array) => {
-                            if (value.id.toString() === selectData.userId) {
-                                return;
-                            }
-                            var groupMembersDiv = document.createElement("div");
-                            groupMembersDiv.classList.add("form-check");
-
-                            var divLabel = document.createElement("label");
-                            divLabel.classList.add("form-check-label");
-
-                            var inputElem = document.createElement("input");
-                            inputElem.setAttribute('type', 'radio');
-                            inputElem.setAttribute('name', 'ParticipantIds' + '-' + value["id"]);
-                            inputElem.classList.add("form-check-input");
-
-                            divLabel.appendChild(inputElem);
-                            divLabel.append(value["fullName"]);
-                            groupMembersDiv.appendChild(divLabel);
-
-                            outerDiv.appendChild(groupMembersDiv);
-                        });
-                    }
-                });
-            });
-        }
-    });
 }
 function initializeNewSLModal() {
     var placeholderElement = $('#new-shop-list-modal-placeholder');
@@ -307,7 +467,7 @@ function initializeNewSLModal() {
         var url = $(this).data('url');
         $.get(url).done(function (data) {
             placeholderElement.html(data);
-            initializeSelectGroup();
+            initializeNewItemSelectGroup('groupSCSelect', 'groupMembersSCWrapper');
             initializeAddSingleElementButton();
             placeholderElement.find('#modalNewShoppingListCreate').modal('show');
         });
@@ -364,7 +524,6 @@ function initializeNewSLModal() {
         placeholderElement.find('.modal').remove();
     });
 }
-
 function initializeAddSingleElementButton() {
     var unitOptions = listSelectUnitOptions();
 
@@ -433,7 +592,6 @@ function initializeAddSingleElementButton() {
         singleElementWrapper.append(mainElementdiv);
     });
 }
-
 function listSelectUnitOptions() {
     var listGroupInfoUrl = "/BudgetManager/ListUnitValues";
     var optionList = [];

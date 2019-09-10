@@ -30,6 +30,12 @@
     <Content Update="Views\BudgetManager\_createNewShoppingListPartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\BudgetManager\_deleteRecurringBillPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\BudgetManager\_futurePaymentsBMPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\ExpenseManager\NewRecurringExpense.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

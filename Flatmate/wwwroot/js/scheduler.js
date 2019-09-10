@@ -301,12 +301,11 @@ function confirmUnsubcribe(unsubButtonId) {
 }
 
 function initializeDatePickersWithInitialDates(firstDTPSelector, secondDTPSelector, parsedStartDate, parsedEndDate) {
-    console.log(parsedStartDate);
-    console.log(parsedEndDate);
+    var currentDate = new Date();
     $(firstDTPSelector).datetimepicker('maxDate', parsedEndDate);
-    $(secondDTPSelector).datetimepicker('minDate', parsedStartDate);
-    console.log(parsedStartDate);
-    console.log(parsedEndDate);
+    $(secondDTPSelector).datetimepicker('minDate',
+        currentDate > new Date(parsedStartDate) ? currentDate : parsedStartDate
+    );
 
     linkDatetimepickersBySelectors(firstDTPSelector, secondDTPSelector);
 }
@@ -325,7 +324,10 @@ function initializeDatePickers(firstDTPSelector, secondDTPSelector) {
 function linkDatetimepickersBySelectors(firstDTPSelector, secondDTPSelector) {
     
     $(firstDTPSelector).on("change.datetimepicker", function (e) {
-        $(secondDTPSelector).datetimepicker('minDate', e.date);
+        var currentDate = new Date();
+        $(secondDTPSelector).datetimepicker('minDate',
+            currentDate > e.date ? moment(currentDate) : e.date
+        );
     });
     $(secondDTPSelector).on("change.datetimepicker", function (e) {
         $(firstDTPSelector).datetimepicker('maxDate', e.date);
@@ -547,7 +549,7 @@ function initializeNewEventModal() {
         $.get(url).done(function (data) {
             placeholderElement.html(data);
             initializeDatePickers('#startDateNewEvent', '#endDateNewEvent');
-            initializeSchedulerSelectGroup();
+            initializeNewItemSelectGroup('groupNESelect', 'groupMembersNEWrapper');
             placeholderElement.find('#modalNewEventCreate').modal('show');
         });
     });
@@ -623,15 +625,16 @@ function parseToDatepickersDate(dateString) {
     return splitDate;
 }
 
-function initializeSchedulerSelectGroup() {
+function initializeNewItemSelectGroup(selectId, groupMembersWrapperId) {
     var listGroupInfoUrl = "/Scheduler/ListGroupInfo";
+    //TODO: change to currentUserId
     var selectData = { userId: "1" };
     $.ajax({
         type: "GET",
         url: listGroupInfoUrl,
         data: selectData,
         success: function (result) {
-            var groupSelect = document.getElementById("groupNESelect");
+            var groupSelect = document.getElementById(selectId);
             result.forEach((value, index, array) => {
                 var selectOption = document.createElement("option");
                 selectOption.text = value["name"];
@@ -639,15 +642,15 @@ function initializeSchedulerSelectGroup() {
                 groupSelect.appendChild(selectOption);
             });
 
-            $("#groupNESelect").on('change', function () {
-                var listGroupMembersUrl = "/Scheduler/ListGroupMembersInfo";
-                var optionsData = { groupId: $('#groupNESelect').find(':selected').val() };
+            $("#" + selectId).on('change', function () {
+                var listGroupMembersUrl = "/Teams/ListGroupMembersInfo";
+                var optionsData = { groupId: $('#' + selectId).find(':selected').val() };
                 $.ajax({
                     type: "GET",
                     url: listGroupMembersUrl,
                     data: optionsData,
                     success: function (result) {
-                        var outerDiv = document.getElementById("groupMembersNEWrapper");
+                        var outerDiv = document.getElementById(groupMembersWrapperId);
                         while (outerDiv.firstChild) {
                             outerDiv.removeChild(outerDiv.firstChild);
                         }

@@ -23,9 +23,8 @@
                         }
                     </ul>
                 </div>
-                @*TODO: change action redirect*@
-                <a onclick="activateFinalizeCard(@shoppingList.Id)" class="fas fa-shopping-cart m-3 float-right" title="Done!"></a>
-                <a onclick="activateDeleteCard(@shoppingList.Id)" class="fas fa-trash m-3 float-right" title="Delete!"></a>
+                <a onclick="activateFinalizeSLCard(@shoppingList.Id)" class="fas fa-shopping-cart m-3 float-right" title="Done!"></a>
+                <a onclick="activateDeleteSLCard(@shoppingList.Id)" class="fas fa-trash m-3 float-right" title="Delete!"></a>
             </div>
         </div>
     }
@@ -35,20 +34,13 @@ else
     <div class="col-12 mb-2">
         <div class="toast animated fadeIn mx-auto" style="opacity: 1">
             <div class="toast-header d-block yellow lighten-5">
-                <strong>Create your shopping list!</strong><br />
-                <i><small>Expense category</small></i><br />
-                <small>Creation date</small>
+                <button class="h4 mt-2 border-0 bg-transparent" data-toggle="ajax-shopping-list-modal" data-target="#modalShoppingListCreate" data-url="@Url.Action("NewShoppingList")">
+                    Create new shopping list!
+                </button>
             </div>
             <div class="toast-body">
-                <ul class="p-1">
-                    @for (int i = 0; i < exampleElements; i++)
-                    {
-                        <li>Title - Amount <small>Unit</small></li>
-                    }
-                </ul>
+                <p class="text-center">You shopping listing is empty!</p>
             </div>
-            <a href="#" class="fas fa-shopping-cart m-3 float-right" title="Done!"></a>
-            <a href="#" class="fas fa-trash m-3 float-right" title="Delete!"></a>
         </div>
     </div>
 

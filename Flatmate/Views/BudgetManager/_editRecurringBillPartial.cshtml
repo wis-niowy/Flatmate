@@ -1,0 +1,71 @@
+﻿@model Flatmate.ViewModels.BudgetManager.BillingViewModel
+@using Flatmate.Helpers;
+
+<div class="card" id="finalizeShoppingDiv">
+    <div class="h5 card-header text-center grey lighten-2">
+        <i class="fas fa-angle-double-left mr-2 text-white"></i>
+        Your bill
+        <i class="fas fa-angle-double-right ml-2 text-white"></i>
+    </div>
+    <div class="card-body">
+        <form id="editBillForm" asp-action="EditRecurringBill">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="GroupId" type="hidden" />
+            <input asp-for="LastOccurenceDate" type="hidden" />
+            <input asp-for="CreationDate" type="hidden" />
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <div class="form-group">
+                <label class="d-inline-flex col-lg-5 col-md-11">Title:</label>
+                <input asp-for="Subject" class="form-control d-inline-flex col-lg-6" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="d-inline-flex col-lg-5 col-md-11">Charge for each person:</label>
+                <input asp-for="Value" class="form-control d-inline-flex col-lg-6" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="dropdown form-group">
+                <label asp-for="Frequency" class="d-inline-flex col-lg-5 col-md-11">Charging frequency:</label>
+                <select name="Frequency" id="categorySelect" class="d-inline-flex col-lg-6 form-control-sm form-control" asp-items="Html.GetEnumSelectList<Frequency>()">
+                </select>
+            </div>
+            <div class="dropdown form-group">
+                <label asp-for="ExpenseCategory" class="d-inline-flex col-lg-5 col-md-11">Expense category:</label>
+                <select name="ExpenseCategory" id="categorySelect" class="d-inline-flex col-lg-6 form-control-sm form-control" asp-items="Html.GetEnumSelectList<ExpenseCategory>()">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="d-inline-flex col-lg-5 col-md-11">Charging start date:</label>
+                <div class="d-inline-flex col-lg-6 input-group date" id="startDateEditRB" data-target-input="nearest">
+                    <input asp-for="StartDate" type="text" class="form-control form-control-sm datetimepicker-input" data-target="#startDateEditRB" />
+                    <div class="input-group-append" data-target="#startDateEditRB" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpirationDate" class="d-inline-flex col-lg-5 col-md-11">Charging end date:</label>
+                <div class="d-inline-flex col-lg-6 input-group date" id="endDateEditRB" data-target-input="nearest">
+                    <input asp-for="ExpirationDate" type="text" class="form-control-sm form-control datetimepicker-input" data-target="#endDateEditRB" />
+                    <div class="input-group-append" data-target="#endDateEditRB" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label><small class="font-weight-bold">Group: </small>@Model.GroupName</label>
+            </div>
+            <div class="mt-3" id="groupMembersRBEWrapper">
+
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
+    </div>
+    <div class="d-flex card-footer justify-content-between">
+        <button class="w-50 btn btn-dark" data-dismiss="card">Close</button>
+        <button id="btnSubmit" type="submit" data-edit="card" class="w-50 btn btn-dark">Edit!</button>
+    </div>
+</div>

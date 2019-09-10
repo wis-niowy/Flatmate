@@ -1,0 +1,76 @@
+﻿@model Flatmate.ViewModels.BudgetManager.BillingViewModel;
+@using Flatmate.Helpers;
+<div class="modal fade" id="modalNewRBCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded">
+            <div id="exampleModalLabel" class="h5 modal-header justify-content-center blue">
+                <i class="fas fa-angle-double-left mr-2 text-white"></i>
+                Create new bill
+                <i class="fas fa-angle-double-right ml-2 text-white"></i>
+            </div>
+            <div class="modal-body">
+                <form id="NewRBForm" asp-action="NewRecurringBill">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Subject" class="font-weight-bold">Title:</label>
+                        <input asp-for="Subject" class="form-control" placeholder="Your bill title..." />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Value" class="font-weight-bold">Value:</label>
+                        <input asp-for="Value" class="form-control" placeholder="Your bill value..." />
+                        <span asp-validation-for="Value" class="text-danger"></span>
+                    </div>
+                    <div class="dropdown form-group">
+                        <label asp-for="Frequency" class="font-weight-bold d-inline-flex col-5">Billing frequency:</label>
+                        <select name="Frequency" id="frequencySelect" class="form-control form-control-sm d-inline-flex col-6" asp-items="Html.GetEnumSelectList<Frequency>()">
+                            <option value="" selected disabled hidden>Frequency >></option>
+                        </select>
+                    </div>
+                    <div class="dropdown form-group">
+                        <label asp-for="ExpenseCategory" class="font-weight-bold d-inline-flex col-5">Expense category:</label>
+                        <select name="ExpenseCategory" id="categorySelect" class="form-control form-control-sm d-inline-flex col-6" asp-items="Html.GetEnumSelectList<ExpenseCategory>()">
+                            <option value="" selected disabled hidden>Expense category >></option>
+                        </select>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <label asp-for="StartDate" class="font-weight-bold d-inline-flex col-5">Charging starts at:</label>
+                        <div class="input-group d-inline-flex col-6 date" id="startDateNewRB" data-target-input="nearest">
+                            <input asp-for="StartDate" type="text" class="form-control form-control-sm datetimepicker-input" data-target="#startDateNewRB" />
+                            <div class="input-group-append" data-target="#startDateNewRB" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ExpirationDate" class="font-weight-bold d-inline-flex col-5">Charging ends at:</label>
+                        <div class="input-group d-inline-flex col-6 date" id="endDateNewRB" data-target-input="nearest">
+                            <input asp-for="ExpirationDate" type="text" class="form-control form-control-sm datetimepicker-input" data-target="#endDateNewRB" />
+                            <div class="input-group-append" data-target="#endDateNewRB" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                        <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                    </div>
+                    <hr/>
+                    <div class="dropdown">
+                        <label asp-for="GroupId" class="font-weight-bold">Choose team name:</label>
+                        <select asp-for="GroupId" id="groupNRBSelect" class="form-control">
+                            <option value="" selected disabled hidden>Team name >></option>
+                        </select>
+                    </div>
+                    <div class="mt-3" id="groupMembersNRBWrapper">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button class="btn btn-dark" data-dismiss="modal">Close</button>
+                <button id="btnSubmit" type="submit" data-save="modal" class="btn btn-dark">Ready!</button>
+            </div>
+        </div>
+    </div>
+</div>
