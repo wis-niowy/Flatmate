@@ -8,15 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using Flatmate.Data;
 using Flatmate.Models.EntityModels;
 using Flatmate.ViewModels.Dashboard;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flatmate.Controllers
 {
     public class TeamsController : Controller
     {
         private readonly FlatmateContext _context;
+        private readonly UserManager<User> userManager;
 
-        public TeamsController(FlatmateContext context)
+        public TeamsController(UserManager<User> userManager,
+                                FlatmateContext context)
         {
+            this.userManager = userManager;
             _context = context;
         }
 
@@ -26,8 +30,10 @@ namespace Flatmate.Controllers
             //var teams = await _context.Teams.ToListAsync();
             return View();
         }
-        public async Task<IActionResult> ListGroupInfo(int userId)
+        public async Task<IActionResult> ListGroupInfo(/*int userId*/)
         {
+            var userId = (await userManager.GetUserAsync(HttpContext.User)).Id;
+
             return Json(await _context.Teams
                 .Where(t => t.UserAssignments.Any(u => u.UserId == userId))
                 .AsNoTracking()

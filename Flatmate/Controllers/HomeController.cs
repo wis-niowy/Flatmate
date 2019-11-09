@@ -11,14 +11,21 @@ using Flatmate.Data;
 using Flatmate.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Flatmate.ViewModels.Scheduler;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flatmate.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly FlatmateContext _context;
-        public HomeController(FlatmateContext context)
+        private readonly UserManager<User> userManager;
+
+        public HomeController(UserManager<User> userManager,
+                                FlatmateContext context)
         {
+            this.userManager = userManager;
             _context = context;
         }
 
@@ -27,27 +34,32 @@ namespace Flatmate.Controllers
             return View();
         }
 
-        public IActionResult ListUpcomingEvents(int? displayedDays)
+        [Authorize]
+        public async Task<IActionResult> ListUpcomingEvents(int? displayedDays)
         {
             //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var displayedNumberOfDays = displayedDays ?? 3;
             var upcomingEventsList = GenerateEventDetails(currentUserId, displayedNumberOfDays);
             return PartialView("_upcomingEventsPartial", upcomingEventsList);
         }
-        public IActionResult ListShoppingInformation()
+
+        [Authorize]
+        public async Task<IActionResult> ListShoppingInformation()
         {
             //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var plannedShoppingInformations = GenerateShoppingInformation(currentUserId);
             return PartialView("_plannedShoppingHomePartial", plannedShoppingInformations);
         }
-        public IActionResult ListSettlementInformation()
+
+        [Authorize]
+        public async Task<IActionResult> ListSettlementInformation()
         {
             //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var userCredibilities = GenerateUserCredibilities(currentUserId);
             var userLiabilities = GenerateUserLiabilities(currentUserId);
@@ -59,15 +71,17 @@ namespace Flatmate.Controllers
             };
             return PartialView("_settlementPartial", settlementVM);
         }
-        public IActionResult ListRecurringBills()
+
+        [Authorize]
+        public async Task<IActionResult> ListRecurringBills()
         {
             //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var recurringBillsInfo = GenerateRecurringBills(currentUserId);            
             return PartialView("_futurePaymentsPartial", recurringBillsInfo);
         }
-
+        
         private List<SingleComplexOrder> GenerateShoppingInformation(int currentUserId)
         {
             var plannedShoppingInformations = _context.ComplexOrders
@@ -78,6 +92,7 @@ namespace Flatmate.Controllers
 
             return plannedShoppingInformations;
         }
+        
         private List<EventDetails> GenerateEventDetails(int currentUserId, int displayedNumberOfDays)
         {            
             var upcomingEventsInfo = _context.ScheduledEvents

@@ -12,14 +12,19 @@ using Flatmate.Models.EntityModels;
 using Flatmate.ViewModels.Scheduler;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flatmate.Controllers
 {
     public class SchedulerController : Controller
     {
         private readonly FlatmateContext _context;
-        public SchedulerController(FlatmateContext context)
+        private readonly UserManager<User> userManager;
+
+        public SchedulerController(UserManager<User> userManager,
+                                    FlatmateContext context)
         {
+            this.userManager = userManager;
             _context = context;
         }
 
@@ -161,7 +166,7 @@ namespace Flatmate.Controllers
             {
                 //TODO: change the id to the currentUser and signal error
             }
-            return RedirectToAction(nameof(Index), new { id = 1 });
+            return RedirectToAction(nameof(Index)/*, new { id = 1 }*/);
         }
 
         [HttpPut]
@@ -169,7 +174,7 @@ namespace Flatmate.Controllers
         {
             try
             {
-                var currentUserId = 1;
+                var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
                 var userParticipations = _context.ScheduledEventUsers
                     .Where(seu => seu.ScheduledEventId == eventId)
                     .ToList();

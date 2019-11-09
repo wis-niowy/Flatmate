@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using Flatmate.Models.EntityModels;
 using Flatmate.Helpers;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flatmate.Data
 {
-    public class FlatmateContext : DbContext
+    public class FlatmateContext : IdentityDbContext<User,IdentityRole<int>,int>
     {
-        public DbSet<User> Users { get; set; }
+        // zakomentowane, bo właściwość Users z użytkownikami jest w klasie IdentityUserContext (DbSet generyczny) z której dziedziczy IdentityDbContext
+        // typ Users (który dziedziczy z IdentityUser<int>) jest wsztrzyknięty w metodzie ConfigureServices (Startup.cs)
+        //public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<UserTeam> UserPerTeams { get; set; }
         public DbSet<SingleComplexOrder> ComplexOrders { get; set; }
@@ -30,6 +34,8 @@ namespace Flatmate.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             //Configuring relationships
             ConfigureUserTeamRelations(modelBuilder);
             ConfigureOrderRelations(modelBuilder);

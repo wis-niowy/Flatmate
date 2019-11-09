@@ -145,7 +145,7 @@ function initializeSelectGroup() {
     var listGroupInfoUrl = "/Teams/ListGroupInfo";
     //TODO: change to current user id
     var currentUserId = "1";
-    var selectData = { userId: currentUserId };
+    var selectData = { /*userId: currentUserId*/ };
     $.ajax({
         type: "GET",
         url: listGroupInfoUrl,

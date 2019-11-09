@@ -9,15 +9,19 @@ using Flatmate.Data;
 using Flatmate.Models.EntityModels;
 using Flatmate.ViewModels.BudgetManager;
 using Flatmate.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace Flatmate.Controllers
 {
     public class BudgetManagerController : Controller
     {
         private readonly FlatmateContext _context;
+        private readonly UserManager<User> userManager;
 
-        public BudgetManagerController(FlatmateContext context)
+        public BudgetManagerController(UserManager<User> userManager,
+                                        FlatmateContext context)
         {
+            this.userManager = userManager;
             _context = context;
         }
 
@@ -27,10 +31,10 @@ namespace Flatmate.Controllers
             var flatmateContext = _context.TotalExpenses.Include(t => t.Owner);
             return View(await flatmateContext.ToListAsync());
         }
-        public IActionResult ShoppingFinalization(int orderId)
+
+        public async Task<IActionResult> ShoppingFinalization(int orderId)
         {
-            //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var plannedShoppingInformations = GenerateFinalizationModel(orderId, currentUserId);
             return PartialView("_finalizeShoppingPartial", plannedShoppingInformations);
@@ -93,10 +97,10 @@ namespace Flatmate.Controllers
         {
             return null;
         }
-        public IActionResult ShoppingRemoval(int orderId)
+        public async Task<IActionResult> ShoppingRemoval(int orderId)
         {
             //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var plannedShoppingInformations = GenerateShoppingRemovalModel(orderId, currentUserId);
             return PartialView("_deleteShoppingPartial", plannedShoppingInformations);
@@ -150,10 +154,10 @@ namespace Flatmate.Controllers
 
             return removalModel;
         }
-        public IActionResult ListShoppingInformation()
+        public async Task<IActionResult> ListShoppingInformation()
         {
             //TODO: change to current user Id
-            var currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
 
             var plannedShoppingInformations = GenerateShoppingInformation(currentUserId);
             return PartialView("_plannedShoppingPartial", plannedShoppingInformations);
@@ -178,10 +182,10 @@ namespace Flatmate.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult NewShoppingList([Bind("Subject, ExpenseCategory, GroupId, SingleElementTitles, SingleElementAmounts, SingleElementUnits, ParticipantIds")] ShoppingCreateViewModel scvm)
+        public async Task<IActionResult> NewShoppingList([Bind("Subject, ExpenseCategory, GroupId, SingleElementTitles, SingleElementAmounts, SingleElementUnits, ParticipantIds")] ShoppingCreateViewModel scvm)
         {
             //TODO: change to current user Id
-            int currentUserId = 1;
+            var currentUserId = (await userManager.GetUserAsync(HttpContext.User)).Id;
             if (ModelState.IsValid)
             {
                 //Dividing data between new event and user assignments.
@@ -237,7 +241,7 @@ namespace Flatmate.Controllers
                 _context.SaveChanges();
 
                 //TODO: change for the currentUserId
-                return RedirectToAction("Index", "BudgetManager", new { id = currentUserId });
+                return RedirectToAction("Index", "BudgetManager"/*, new { id = currentUserId }*/);
             }
             return PartialView("_createNewShoppingListPartial", scvm);
         }
