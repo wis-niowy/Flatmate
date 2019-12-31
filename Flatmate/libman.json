@@ -38,6 +38,16 @@
     {
       "library": "tempusdominus-bootstrap-4@5.1.2",
       "destination": "wwwroot/lib/tempusdominus-bootstrap-4/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap-slider@10.6.2",
+      "destination": "wwwroot/lib/bootstrap-slider/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "Chart.js@2.9.3",
+      "destination": "wwwroot/lib/Chart.js/"
     }
   ]
 }

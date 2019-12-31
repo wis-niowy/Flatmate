@@ -1,0 +1,57 @@
+﻿@model Flatmate.ViewModels.BudgetManager.ExpenseCreateViewModel;
+@using Flatmate.Helpers;
+
+<div class="modal fade" id="modalExpenseCreate" tabindex="-1" role="dialog" aria-labelledby="newExpenseModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded">
+            <div id="newExpenseModal" class="h5 modal-header justify-content-center blue">
+                <i class="fas fa-angle-double-left mr-2 text-white"></i>
+                Create new expense
+                <i class="fas fa-angle-double-right ml-2 text-white"></i>
+            </div>
+            <div class="modal-body">
+                <form id="NewExpenseForm" asp-action="NewExpense">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Subject" class="font-weight-bold col-5">Title:</label>
+                        <input asp-for="Subject" class="col-6 d-inline form-control form-control-sm" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+                    <div class="dropdown form-group">
+                        <label asp-for="ExpenseCategory" class="font-weight-bold d-inline-flex col-5">Expense category:</label>
+                        <select name="ExpenseCategory" id="categorySelect" class="form-control form-control-sm d-inline-flex col-6" asp-items="Html.GetEnumSelectList<ExpenseCategory>()">
+                            <option value="" selected disabled hidden>Expense category >></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Value" class="font-weight-bold col-5">Total value:</label>
+                        <input asp-for="Value" class="col-6 d-inline form-control form-control-sm" />
+                        <span asp-validation-for="Value" class="text-danger"></span>
+                    </div>
+                    <div class="form-check-inline col-lg-6">
+                        <input id="divideBillEquallyCheckbox" type="checkbox" class="mx-2 my-3 form-check-input" /><small> Divide charge equally</small>
+                    </div>
+                    <div class="form-check-inline col-lg-5">
+                        <input asp-for="IsCovered" type="checkbox" class="my-3 form-check-input" /><small>Mark this bill as settled</small>
+                        <span asp-validation-for="IsCovered" class="text-danger"></span>
+                    </div>
+                    <hr />
+                    <div class="dropdown">
+                        <label asp-for="GroupId" class="font-weight-bold d-inline-flex col-5">Choose team name:</label>
+                        <select asp-for="GroupId" id="groupExpenseCreateSelect" class="form-control form-control-sm d-inline-flex col-6">
+                            <option value="" selected disabled hidden>Team name >></option>
+                        </select>
+                    </div>
+                    <div class="mx-2 mt-3" id="groupMembersExpenseCreateWrapper">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button class="btn btn-dark" data-dismiss="modal">Close</button>
+                <button id="btnSubmit" type="submit" data-save="modal" class="btn btn-dark">Ready!</button>
+            </div>
+        </div>
+    </div>
+</div>

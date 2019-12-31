@@ -191,6 +191,7 @@ namespace Flatmate.Migrations
                     UserId = table.Column<int>(nullable: false),
                     TeamId = table.Column<int>(nullable: false),
                     Value = table.Column<double>(nullable: false),
+                    SettlementDate = table.Column<DateTime>(nullable: true),
                     Covered = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

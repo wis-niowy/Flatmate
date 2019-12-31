@@ -149,7 +149,7 @@ namespace Flatmate.Controllers
             {
                 foreach(var pe in te.PartialExpenses)
                 {
-                    if(pe.UserId != currentUserId)
+                    if(pe.UserId != currentUserId && !pe.Covered)
                     {
                         var singleCredibility = new SettlementViewModel.SingleExpense
                         {
@@ -244,12 +244,18 @@ namespace Flatmate.Controllers
         }
         private DateTime? CalculateNextOccurenceDate(RecurringBill rb)
         {
+
             if(DateTime.Compare(DateTime.Now, rb.StartDate) <= 0)
             {
                 return rb.StartDate;
             }
             else
             {
+                if (rb.LastOccurenceDate == null)
+                {
+                    rb.LastOccurenceDate = DateTime.Now.AddHours(-1);
+                }
+
                 //We assume that there was at least one occurence, so LastOccurenceDate is not null
                 int weekDaysNumber = 7;
                 int numberOfDaysToAdd = 0, numberOfWeeksToAdd = 0, numberOfMonthsToAdd = 0;

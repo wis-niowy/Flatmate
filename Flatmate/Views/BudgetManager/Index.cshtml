@@ -1,7 +1,7 @@
 ﻿
 <div id="new-shop-list-modal-placeholder"></div>
 <div id="new-bill-modal-placeholder"></div>
-<div id="settlement-modal-placeholder"></div>
+<div id="new-settlement-modal-placeholder"></div>
 
 <div id="accordion">
     @*Shopping module*@
@@ -11,22 +11,19 @@
                 <div><b>Shopping <br /> module</b></div>
                 <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
             </div>
-            <div class="col-md-3" style="text-align:right">
+            <div class="col-md-3 px-1" style="text-align:right">
                 <button type="button" title="Add new shopping list" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
                         data-toggle="ajax-shopping-list-modal" data-target="#modalShoppingListCreate" data-url="@Url.Action("NewShoppingList")">
                     <i class="fas fa-plus mt-0"></i>
-                </button>
-                <button type="button" title="Shopping module manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
-                    <i class="fas fa-info-circle mt-0"></i>
                 </button>
             </div>
         </div>
         <div id="collapseOne" class="collapse show card-body" aria-labelledby="shopHeading" data-parent="#accordion">
             <div class="row">
-                <div id="plannedShoppingDiv" class="col-lg-4 col-md-5 col-12 overflow-auto">
+                <div id="plannedShoppingDiv" class="col-lg-4 col-11 row accordion-content-tall mb-4 mx-2">
 
                 </div>
-                <div id="shoppingDetailsDiv" class="col-lg-7 col-md-6 col-12">
+                <div id="shoppingDetailsDiv" class="col-lg-7 col-11 accordion-content-tall mb-4 mx-2">
 
                 </div>
             </div>
@@ -41,25 +38,22 @@
                 <div><b>Recurring <br /> bills</b></div>
                 <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
             </div>
-            <div class="col-md-3" style="text-align:right">
+            <div class="col-md-3 px-1" style="text-align:right">
                 <button type="button" title="Add new recurring bill" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
                         data-toggle="ajax-recurring-bill-modal" data-target="#modalRecurringBillCreate" data-url="@Url.Action("NewRecurringBill")">
                     <i class="fas fa-plus mt-0"></i>
-                </button>
-                <button type="button" title="Bills module manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
-                    <i class="fas fa-info-circle mt-0"></i>
                 </button>
             </div>
         </div>
         <div id="collapseTwo" class="card-body collapse" aria-labelledby="billHeading" data-parent="#accordion">
             <div class="row">
-                <div id="rbsInProgressDiv" class="col-lg-4 col-md-5 col-12 overflow-auto">
+                <div id="rbsInProgressDiv" class="col-lg-4 col-11 row accordion-content-tall mb-4 mx-2">
 
                 </div>
-                <div id="rbDetailsDiv" class="col-lg-7 col-md-6 col-12">
+                <div id="rbDetailsDiv" class="col-lg-7 col-11 accordion-content-tall mb-4 mx-2">
 
                 </div>
-            </div>        
+            </div>
         </div>
     </div>
 
@@ -70,14 +64,57 @@
                 <div><b>Expenses <br /> history</b></div>
                 <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
             </div>
-            <div class="col-md-3" style="text-align:right">
+            <div class="col-md-3 px-1" style="text-align:right">
                 <button type="button" title="Expense history manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
                     <i class="fas fa-info-circle mt-0"></i>
                 </button>
             </div>
         </div>
         <div id="collapseThree" class="card-body collapse" aria-labelledby="expenseHeading" data-parent="#accordion">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            <div class="row">
+                <div class="col-lg-6 col-12 overflow-auto">
+                    <div id="expenseHistoryDiv">
+                        <div>
+                            <label class="d-inline-flex">Choose period:</label>
+                            <select id="expenseHistoryDurationSelect" class="d-inline-flex">
+                                <option value="3days" selected>3 days</option>
+                                <option value="1week">1 Week</option>
+                                <option value="1month">1 month</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="btn-group nav blue lighten-2" role="tablist" id="expenseHistoryTab">
+                                <button type="button" id="executedLiabilitiesTab" data-toggle="tab" href="#executedLiabilities" role="tab"
+                                        class="btn text-white active" aria-selected="true">
+                                    I owed
+                                </button>
+                                <button type="button" id="executedCredibilitiesTab" data-toggle="tab" href="#executedCredibilities" role="tab"
+                                        class="btn text-white" aria-selected="false">
+                                    They owed me
+                                </button>
+                            </div>
+                            <table class="w-100 btn-group">
+                                <thead class="w-100">
+                                    <tr class="w-100 btn-group">
+                                        <th class="btn btn-sm disabled text-danger font-weight-bold" style="font-size:12px" id="coveredLiabilitiesLabel">
+                                            SUM : UNKNOWN
+                                        </th>
+                                        <th class="btn btn-sm disabled font-weight-bold" style="font-size:12px" id="coveredCredibilitiesLabel">
+                                            SUM : UNKNOWN
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div id="executedExpensesDiv" class="tab-content mt-3 acco">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="expenseVisualizationDiv" class="col-lg-5 col-12 accordion-content-short">
+                    <canvas id="myChart" width="400" height="400" ></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -88,18 +125,54 @@
                 <div class="align-self-center"><b>Settlements</b></div>
                 <i class="fas fa-angle-double-right fa-2x ml-2 white-text align-self-center"></i>
             </div>
-            <div class="col-md-3" style="text-align:right">
+            <div class="col-md-3 px-1" style="text-align:right">
+                <button type="button" title="Cover selected expenses" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
+                        id="coverExpensesButton" style="visibility:hidden" data-url="@Url.Action("MarkExpensesAsCovered")">
+                    <i class="far fa-money-bill-alt"></i>
+                </button>
                 <button type="button" title="Add new expense" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2"
                         data-toggle="ajax-new-expense-modal" data-target="#modalExpenseCreate" data-url="@Url.Action("NewExpense")">
                     <i class="fas fa-plus mt-0"></i>
                 </button>
-                <button type="button" title="Settlements module manual" class="btn btn-outline-white btn-rounded btn-sm px-2 mx-2">
-                    <i class="fas fa-info-circle mt-0"></i>
-                </button>
             </div>
         </div>
         <div id="collapseFour" class="card-body collapse" aria-labelledby="settlementHeading" data-parent="#accordion">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            <div class="row">
+                <div class="col-lg-7 col-12 overflow-auto">
+                    <div id="currentSettlementsDiv">
+                        <div>
+                            <div class="btn-group nav blue lighten-2" role="tablist" id="currentExpensesTab">
+                                <button type="button" id="currentLiabilitiesTab" data-toggle="tab" href="#currentLiabilities" role="tab"
+                                        class="btn text-white active" aria-selected="true">
+                                    I owe
+                                </button>
+                                <button type="button" id="currentCredibilitiesTab" data-toggle="tab" href="#currentCredibilities" role="tab"
+                                        class="btn text-white" aria-selected="false">
+                                    They owe me
+                                </button>
+                            </div>
+                            <table class="w-100 btn-group">
+                                <thead class="w-100">
+                                    <tr class="w-100 btn-group">
+                                        <th class="btn btn-sm disabled text-danger font-weight-bold" style="font-size:12px" id="currentLiabilitiesLabel">
+                                            SUM : Loading..
+                                        </th>
+                                        <th class="btn btn-sm disabled font-weight-bold" style="font-size:12px" id="currentCredibilitiesLabel">
+                                            SUM : Loading..
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div id="currentExpensesDiv" class="tab-content mt-3">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="settlementDetailsDiv" class="col-lg-5 col-12 accordion-content-short" style="overflow: visible">
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

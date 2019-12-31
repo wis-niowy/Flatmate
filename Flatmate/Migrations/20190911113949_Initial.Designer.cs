@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flatmate.Migrations
 {
     [DbContext(typeof(FlatmateContext))]
-    [Migration("20190828125016_Initial")]
+    [Migration("20190911113949_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,8 @@ namespace Flatmate.Migrations
                     b.Property<int>("TeamId");
 
                     b.Property<bool>("Covered");
+
+                    b.Property<DateTime?>("SettlementDate");
 
                     b.Property<double>("Value");
 

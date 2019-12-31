@@ -29,6 +29,8 @@ namespace Flatmate.Migrations
 
                     b.Property<bool>("Covered");
 
+                    b.Property<DateTime?>("SettlementDate");
+
                     b.Property<double>("Value");
 
                     b.HasKey("TotalExpenseId", "UserId", "TeamId");

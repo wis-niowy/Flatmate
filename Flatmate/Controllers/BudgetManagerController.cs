@@ -122,6 +122,7 @@ namespace Flatmate.Controllers
                     partialExpenses.Add(new PartialExpense
                     {
                         Covered = sfvm.DidParticipantsPay[i],
+                        SettlementDate = sfvm.DidParticipantsPay[i] ? DateTime.Now : (DateTime?)null,
                         TeamId = sfvm.GroupId,
                         TotalExpenseId = totalExpense.Id,
                         UserId = sfvm.ParticipantIds[i],
@@ -371,6 +372,7 @@ namespace Flatmate.Controllers
         }
         private DateTime? CalculateNextOccurenceDate(RecurringBill rb)
         {
+            //TODO; change to just DateTime.Now
             int sessionduration = 10;
             if (DateTime.Compare(DateTime.Now.AddMinutes(sessionduration), rb.StartDate) <= 0)
             {
@@ -378,6 +380,11 @@ namespace Flatmate.Controllers
             }
             else
             {
+                if (rb.LastOccurenceDate == null)
+                {
+                    rb.LastOccurenceDate = DateTime.Now.AddHours(-1);
+                }
+
                 //We assume that there was at least one occurence, so LastOccurenceDate is not null
                 int weekDaysNumber = 7;
                 int numberOfDaysToAdd = 0, numberOfWeeksToAdd = 0, numberOfMonthsToAdd = 0;
@@ -425,8 +432,8 @@ namespace Flatmate.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult NewRecurringBill([Bind("Subject, Value, Frequency, ExpenseCategory, StartDate, ExpirationDate, GroupId, ParticipantIds")] BillingViewModel rbcvm)
         {
-            if(ModelState.IsValid)
-            { 
+            if (ModelState.IsValid)
+            {
                 var newRecurringBill = new RecurringBill
                 {
                     Id = rbcvm.Id,
@@ -454,7 +461,7 @@ namespace Flatmate.Controllers
                     }
                 };
 
-                foreach(var participantId in rbcvm.ParticipantIds)
+                foreach (var participantId in rbcvm.ParticipantIds)
                 {
                     billAssignments.Add(new RecurringBillPerTeamMember
                     {
@@ -609,15 +616,354 @@ namespace Flatmate.Controllers
                 .Where(rba => rba.RecurringBillId == billId)
                 .ToList();
 
-            ////TODO: check if delete works with only rb remove
-            //_context.RecurringBillAssignments.RemoveRange(dbRBAssignments);
-            //_context.SaveChanges();
-
             _context.RecurringBills.Remove(new RecurringBill { Id = billId });
             _context.SaveChanges();
 
             return RedirectToAction("Index", "BudgetManager", null);
-            
+
+        }
+
+        //TODO: mix with method from HomeControler
+        public IActionResult ListCoveredSettlementInformation(int displayedDays)
+        {
+            //TODO: change to current user Id
+            var currentUserId = 1;
+
+            var userCredibilities = GenerateCoveredUserCredibilities(currentUserId, displayedDays);
+            var userLiabilities = GenerateCoveredUserLiabilities(currentUserId, displayedDays);
+
+            userCredibilities.Sort((a, b) => { return DateTime.Compare(b.FinalizationDate, a.FinalizationDate); });
+            userLiabilities.Sort((a, b) => { return DateTime.Compare(b.FinalizationDate, a.FinalizationDate); });
+
+            var settlementVM = new SettlementViewModel
+            {
+                UserCredibilities = userCredibilities,
+                UserLiabilities = userLiabilities
+            };
+
+            return PartialView("_listCoveredExpensesPartial", settlementVM);
+        }
+        private List<SettlementViewModel.SingleExpense> GenerateCoveredUserCredibilities(int currentUserId, int displayedDays)
+        {
+            var userTotalExpenses = _context.TotalExpenses
+                .Include(te => te.PartialExpenses)
+                .Where(te => te.OwnerId == currentUserId)
+                .AsNoTracking()
+                .ToList();
+
+            //Users with the logged in user
+            var userDetails = _context.Users
+                .Where(u => userTotalExpenses.Any(ute => ute.PartialExpenses.Any(pe => pe.UserId == u.Id)))
+                .AsNoTracking()
+                .ToList();
+
+            var teamDetails = _context.Teams
+                .Where(t => userTotalExpenses.Any(ute => ute.PartialExpenses.Any(pe => pe.TeamId == t.Id)))
+                .AsNoTracking()
+                .ToList();
+
+            var userCredibilities = new List<SettlementViewModel.SingleExpense>();
+
+            foreach (var te in userTotalExpenses)
+            {
+                foreach (var pe in te.PartialExpenses)
+                {
+                    if (pe.UserId != currentUserId && pe.Covered && DateTime.Compare(pe.SettlementDate.Value, DateTime.Now.AddDays(-displayedDays)) >= 0)
+                    {
+                        var singleCredibility = new SettlementViewModel.SingleExpense
+                        {
+                            UserInfo = new Tuple<int, string>(pe.UserId, userDetails.Find(u => u.Id == pe.UserId).FullName),
+                            TeamInfo = new Tuple<int, string>(pe.TeamId, teamDetails.Find(t => t.Id == pe.TeamId).Name),
+                            TotalExpenseId = pe.TotalExpenseId,
+                            Value = pe.Value,
+                            FinalizationDate = pe.SettlementDate.Value
+                        };
+                        userCredibilities.Add(singleCredibility);
+                    }
+                }
+            }
+
+            return userCredibilities;
+        }
+        private List<SettlementViewModel.SingleExpense> GenerateCoveredUserLiabilities(int currentUserId, int displayedDays)
+        {
+            var chosenDate = DateTime.Now.AddDays(-displayedDays);
+            var userPartialExpenses = _context.PartialExpenses
+                .Where(pe => pe.UserId == currentUserId && pe.Covered && DateTime.Compare(pe.SettlementDate.Value, chosenDate) > 0)
+                .AsNoTracking()
+                .ToList();
+
+            var userTotalExpenses = _context.TotalExpenses
+                .Where(te => userPartialExpenses.Any(pe => pe.TotalExpenseId == te.Id) && te.OwnerId != currentUserId)
+                .AsNoTracking()
+                .ToList();
+
+            //Users with the logged in user
+            var userDetails = _context.Users
+                .Where(u => userPartialExpenses.Any(pe => pe.UserId == u.Id))
+                .AsNoTracking()
+                .ToList();
+
+            var teamDetails = _context.Teams
+                .Where(t => userPartialExpenses.Any(pe => pe.TeamId == t.Id))
+                .AsNoTracking()
+                .ToList();
+
+            var userLiabilities = new List<SettlementViewModel.SingleExpense>();
+
+            foreach (var totalExpense in userTotalExpenses)
+            {
+                PartialExpense pe = userPartialExpenses.Find(partial => partial.TotalExpenseId == totalExpense.Id);
+                var singleExpenseVM = new SettlementViewModel.SingleExpense
+                {
+                    UserInfo = new Tuple<int, string>(pe.UserId, userDetails.Find(u => u.Id == pe.UserId).FullName),
+                    TeamInfo = new Tuple<int, string>(pe.TeamId, teamDetails.Find(t => t.Id == pe.TeamId).Name),
+                    Value = pe.Value,
+                    FinalizationDate = pe.SettlementDate.Value,
+                    TotalExpenseId = totalExpense.Id
+                };
+                userLiabilities.Add(singleExpenseVM);
+            }
+
+            return userLiabilities;
+        }
+        public IActionResult ListCoveredExpenses(int displayedDays)
+        {
+            //TODO: change to current user Id
+            var currentUserId = 1;
+
+            var userCredibilities = GenerateCoveredUserCredibilities(currentUserId, displayedDays);
+            var userLiabilities = GenerateCoveredUserLiabilities(currentUserId, displayedDays);
+
+            userCredibilities.Sort((a, b) => { return DateTime.Compare(a.FinalizationDate, b.FinalizationDate); });
+            userLiabilities.Sort((a, b) => { return DateTime.Compare(a.FinalizationDate, b.FinalizationDate); });
+
+            var perDateCredibilities = userCredibilities.GroupBy(uc => uc.FinalizationDate.Date);
+            var perDateLiabilities = userLiabilities.GroupBy(uc => uc.FinalizationDate.Date);
+
+            var expenseHistoryInfo = new { perDateCredibilities, perDateLiabilities };
+            return Json(expenseHistoryInfo);
+        }
+        public IActionResult ListCurrentSettlementInformation()
+        {
+            //TODO: change to current user Id
+            var currentUserId = 1;
+
+            var userCredibilities = GenerateCurrentUserCredibilities(currentUserId);
+            var userLiabilities = GenerateCurrentUserLiabilities(currentUserId);
+
+            userCredibilities.Sort((a, b) => { return DateTime.Compare(b.FinalizationDate, a.FinalizationDate); });
+            userLiabilities.Sort((a, b) => { return DateTime.Compare(b.FinalizationDate, a.FinalizationDate); });
+
+            var settlementVM = new SettlementViewModel
+            {
+                UserCredibilities = userCredibilities,
+                UserLiabilities = userLiabilities
+            };
+
+            return PartialView("_listCurrentExpensesPartial", settlementVM);
+        }
+        private List<SettlementViewModel.SingleExpense> GenerateCurrentUserCredibilities(int currentUserId)
+        {
+            var userTotalExpenses = _context.TotalExpenses
+                .Include(te => te.PartialExpenses)
+                .Where(te => te.OwnerId == currentUserId)
+                .AsNoTracking()
+                .ToList();
+
+            //Users with the logged in user
+            var userDetails = _context.Users
+                .Where(u => userTotalExpenses.Any(ute => ute.PartialExpenses.Any(pe => pe.UserId == u.Id)))
+                .AsNoTracking()
+                .ToList();
+
+            var teamDetails = _context.Teams
+                .Where(t => userTotalExpenses.Any(ute => ute.PartialExpenses.Any(pe => pe.TeamId == t.Id)))
+                .AsNoTracking()
+                .ToList();
+
+            var userCredibilities = new List<SettlementViewModel.SingleExpense>();
+
+            foreach (var te in userTotalExpenses)
+            {
+                foreach (var pe in te.PartialExpenses)
+                {
+                    if (pe.UserId != currentUserId && !pe.Covered)
+                    {
+                        var singleCredibility = new SettlementViewModel.SingleExpense
+                        {
+                            UserInfo = new Tuple<int, string>(pe.UserId, userDetails.Find(u => u.Id == pe.UserId).FullName),
+                            TeamInfo = new Tuple<int, string>(pe.TeamId, teamDetails.Find(t => t.Id == pe.TeamId).Name),
+                            TotalExpenseId = pe.TotalExpenseId,
+                            Value = pe.Value,
+                            FinalizationDate = te.FinalizationDate
+                        };
+                        userCredibilities.Add(singleCredibility);
+                    }
+                }
+            }
+
+            return userCredibilities;
+        }
+        private List<SettlementViewModel.SingleExpense> GenerateCurrentUserLiabilities(int currentUserId)
+        {
+            var userPartialExpenses = _context.PartialExpenses
+                .Where(pe => pe.UserId == currentUserId && !pe.Covered)
+                .AsNoTracking()
+                .ToList();
+
+            var userTotalExpenses = _context.TotalExpenses
+                .Where(te => userPartialExpenses.Any(pe => pe.TotalExpenseId == te.Id))
+                .AsNoTracking()
+                .ToList();
+
+            //Users with the logged in user
+            var userDetails = _context.Users
+                .Where(u => userPartialExpenses.Any(pe => pe.UserId == u.Id))
+                .AsNoTracking()
+                .ToList();
+
+            var teamDetails = _context.Teams
+                .Where(t => userPartialExpenses.Any(pe => pe.TeamId == t.Id))
+                .AsNoTracking()
+                .ToList();
+
+            var userLiabilities = new List<SettlementViewModel.SingleExpense>();
+
+            foreach (var pe in userPartialExpenses)
+            {
+                TotalExpense totalExpense = userTotalExpenses.Find(te => te.Id == pe.TotalExpenseId);
+                var singleExpenseVM = new SettlementViewModel.SingleExpense
+                {
+                    UserInfo = new Tuple<int, string>(pe.UserId, userDetails.Find(u => u.Id == pe.UserId).FullName),
+                    TeamInfo = new Tuple<int, string>(pe.TeamId, teamDetails.Find(t => t.Id == pe.TeamId).Name),
+                    Value = pe.Value,
+                    FinalizationDate = totalExpense.FinalizationDate,
+                    TotalExpenseId = totalExpense.Id
+                };
+                userLiabilities.Add(singleExpenseVM);
+            }
+
+            return userLiabilities;
+        }
+        public IActionResult ListCurrentExpenses()
+        {
+            //TODO: change to current user Id
+            var currentUserId = 1;
+
+            var userCredibilities = GenerateCurrentUserCredibilities(currentUserId);
+            var userLiabilities = GenerateCurrentUserLiabilities(currentUserId);
+
+            userCredibilities.Sort((a, b) => { return DateTime.Compare(a.FinalizationDate, b.FinalizationDate); });
+            userLiabilities.Sort((a, b) => { return DateTime.Compare(a.FinalizationDate, b.FinalizationDate); });
+
+            var perDateCredibilities = userCredibilities.GroupBy(uc => uc.FinalizationDate.Date);
+            var perDateLiabilities = userLiabilities.GroupBy(uc => uc.FinalizationDate.Date);
+
+            var expenseHistoryInfo = new { perDateCredibilities, perDateLiabilities };
+            return Json(expenseHistoryInfo);
+        }
+        [HttpPost]
+        public IActionResult MarkExpensesAsCovered(int [] expenseIds, int [] userIds, int [] groupIds)
+        {
+            List<int> expenseIdList = expenseIds.ToList(), 
+                userIdList = userIds.ToList(), groupIdList = groupIds.ToList();
+
+            var partialExpensesToCover = _context.PartialExpenses
+                .Where(pe => groupIds.Any(gi => gi == pe.TeamId) 
+                        && userIdList.Any(ui => ui == pe.UserId) 
+                        && expenseIdList.Any(ei => ei == pe.TotalExpenseId));
+
+            foreach(var petu in partialExpensesToCover)
+            {
+                petu.Covered = true;
+                petu.SettlementDate = DateTime.Now;
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "BudgetManager", null);
+        }
+        public IActionResult ExpenseDetails(int totalExpenseId, int userId, int groupId)
+        {
+            var partialExpenseInfo = _context.PartialExpenses
+                .Where(pe => pe.TotalExpenseId == totalExpenseId && pe.UserId == userId && pe.TeamId == groupId)
+                .First();
+
+            var totalExpenseInfo = _context.TotalExpenses
+                .Where(te => te.Id == partialExpenseInfo.TotalExpenseId)
+                .First();
+
+            var groupName = _context.Teams
+                .Where(t => t.Id == groupId)
+                .First().Name;
+
+            var userName = _context.Users
+                .Where(u => u.Id == userId)
+                .First().FullName;
+
+            var ExpenseDetailsVM = new ExpenseDetailsPartialView
+            {
+                Subject = totalExpenseInfo.Subject,
+                Value = partialExpenseInfo.Value,
+                ExpenseCategory = totalExpenseInfo.ExpenseCategory,
+                GroupName = groupName,
+                UserName = userName
+            };
+            return PartialView("_detailsSettlementPartial", ExpenseDetailsVM);
+        }
+        public IActionResult NewExpense()
+        {
+            var ExpenseCreateVM = new ExpenseCreateViewModel { };
+            return PartialView("_newExpensePartial", ExpenseCreateVM);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult NewExpense([Bind("Subject, Value, IsCovered, ExpenseCategory, GroupId, ParticipantIds, ParticipantsCharge, DidParticipantsPay")] ExpenseCreateViewModel ecvm)
+        {
+            //TODO:check validation after adding it
+            if (ModelState.IsValid)
+            {
+                //TODO: change to currentuserId
+                var currentUserId = 1;
+
+                bool isCovered = ecvm.IsCovered ? true : ecvm.DidParticipantsPay.All(pc => pc == true);
+
+                var totalExpense = new TotalExpense
+                {
+                    Covered = isCovered,
+                    FinalizationDate = DateTime.Now,
+                    OwnerId = currentUserId,
+                    ExpenseCategory = ecvm.ExpenseCategory,
+                    Subject = ecvm.Subject,
+                    Value = ecvm.Value
+                };
+
+                _context.TotalExpenses.Add(totalExpense);
+                _context.SaveChanges();
+
+                var partialExpenses = new List<PartialExpense>();
+
+                for (int i = 0; i < ecvm.ParticipantIds.Length; i++)
+                {
+                    partialExpenses.Add(new PartialExpense
+                    {
+                        Covered = ecvm.DidParticipantsPay[i],
+                        SettlementDate = ecvm.DidParticipantsPay[i] ? DateTime.Now : (DateTime?)null,
+                        TeamId = ecvm.GroupId,
+                        TotalExpenseId = totalExpense.Id,
+                        UserId = ecvm.ParticipantIds[i],
+                        Value = ecvm.ParticipantsCharge[i]
+                    });
+                }
+
+                _context.PartialExpenses.AddRange(partialExpenses);
+                _context.SaveChanges();
+                
+                return RedirectToAction("Index", "BudgetManager", new { id = currentUserId });
+            }
+
+            return PartialView("_newExpensePartial", ecvm);
         }
     }
 }

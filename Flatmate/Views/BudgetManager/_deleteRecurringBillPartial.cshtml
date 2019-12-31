@@ -16,17 +16,16 @@
                 <label asp-for="Subject" class="font-weight-bold">@Model.Subject</label>
             </div>
             <div class="form-group">
-                <label asp-for="ExpenseCategory" class="col-lg-5"><small class="font-weight-bold">Expense category:</small><br /> @Model.ExpenseCategory</label>
-                <label asp-for="GroupName" class="col-lg-5"><small class="font-weight-bold">Group:</small><br /> @Model.GroupName</label>
+                <label asp-for="ExpenseCategory" class="col-sm-5"><small class="font-weight-bold">Expense category:</small><br /> @Model.ExpenseCategory</label>
+                <label asp-for="GroupName" class="col-sm-5"><small class="font-weight-bold">Group:</small><br /> @Model.GroupName</label>
             </div>
             <div class="form-group">
-                <label asp-for="StartDate" class="col-lg-5"><small class="font-weight-bold">Starts:</small><br /> @Model.StartDate</label>
-                <label asp-for="ExpirationDate" class="col-lg-5"><small class="font-weight-bold">Expires:</small><br /> @Model.ExpirationDate</label>
+                <label asp-for="StartDate" class="col-sm-5"><small class="font-weight-bold">Starts:</small><br /> @Model.StartDate</label>
+                <label asp-for="ExpirationDate" class="col-sm-5"><small class="font-weight-bold">Expires:</small><br /> @Model.ExpirationDate</label>
             </div>
             <div class="form-group">
-                <label asp-for="CreationDate" class="col-lg-5"><small class="font-weight-bold">Created:</small><br /> @Model.ExpirationDate</label>
-                @*TODO: check display for no occurence*@
-                <label asp-for="LastOccurenceDate" class="col-lg-5"><small class="font-weight-bold">Last occurence:</small><br /> @(Model.LastOccurenceDate.HasValue ? Model.LastOccurenceDate.Value.ToString() : "None")</label>
+                <label asp-for="CreationDate" class="col-sm-5"><small class="font-weight-bold">Created:</small><br /> @Model.CreationDate</label>
+                <label asp-for="LastOccurenceDate" class="col-sm-5"><small class="font-weight-bold">Last occurence:</small><br /> @(Model.LastOccurenceDate.HasValue ? Model.LastOccurenceDate.Value.ToString() : "None")</label>
             </div>
             <hr />
             <div class="mt-3" id="groupMembersRBDWrapper">

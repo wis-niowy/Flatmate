@@ -1,0 +1,70 @@
+﻿@model Flatmate.ViewModels.Dashboard.SettlementViewModel
+@using System.Globalization;
+@{
+    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("de-DE");
+}
+
+<div class="tab-pane fade show active accordion-content-tab" id="currentLiabilities" role="tabpanel" aria-labelledby="currentLiabilitiesTab">
+    <table class="w-100 table-sm table-striped">
+        <tbody>
+            @foreach (var liabilityInfo in Model.UserLiabilities)
+            {
+                <tr onclick="showPlannedExpenseDetails(@liabilityInfo.TotalExpenseId, @liabilityInfo.UserInfo.Item1, @liabilityInfo.TeamInfo.Item1)" 
+                    class="btn w-100 m-0 p-2">
+                    <td class="w-25">
+                        <small>For:</small>
+                        <img class="rounded-circle small-avatar-sizing" src="~/images/Dashboard/settlement/avatar.png" />
+                    </td>
+                    <td class="w-50" style="text-transform:none">
+                        @liabilityInfo.UserInfo.Item2
+                        <br />
+                        <i><small>@liabilityInfo.TeamInfo.Item2</small></i>
+                    </td>
+                    <td class="w-25">
+                        <small>
+                            @liabilityInfo.FinalizationDate.ToString("d", cultureInfo)
+                        </small>
+                    </td>
+                    <td class="w-25 pr-4">
+                        @liabilityInfo.Value PLN
+                    </td>
+                    <td>
+                        @{ var rowLiabilityId = liabilityInfo.TotalExpenseId + '-' + liabilityInfo.UserInfo.Item1 + '-' + liabilityInfo.TeamInfo.Item1; }
+                        <input type="checkbox" id="checkbox-@rowLiabilityId" data-check="expense-cover" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="tab-pane fade accordion-content-tab" id="currentCredibilities" role="tabpanel" aria-labelledby="currentCredibilitiesTab">
+    <table class="w-100 table-sm table-striped">
+        <tbody>
+            @foreach (var credibilityInfo in Model.UserCredibilities)
+            {
+                <tr onclick="showPlannedExpenseDetails(@credibilityInfo.TotalExpenseId, @credibilityInfo.UserInfo.Item1, @credibilityInfo.TeamInfo.Item1)" 
+                    class="btn w-100 m-0 p-2">
+                    <td class="w-25">
+                        <small>From:</small>
+                        <img class="rounded-circle small-avatar-sizing" src="~/images/Dashboard/settlement/avatar.png" />
+                    </td>
+                    <td class="w-50" style="text-transform:none">
+                        @credibilityInfo.UserInfo.Item2
+                        <br />
+                        <i><small>@credibilityInfo.TeamInfo.Item2</small></i>
+                    </td>
+                    <td class="w-25">
+                        <small>@credibilityInfo.FinalizationDate.ToString("d", cultureInfo)</small>
+                    </td>
+                    <td class="w-25 pr-4">
+                        @credibilityInfo.Value PLN
+                    </td>
+                    <td>
+                        @{ var rowCredibilityId = credibilityInfo.TotalExpenseId + "-" + credibilityInfo.UserInfo.Item1 + "-" + credibilityInfo.TeamInfo.Item1; }
+                        <input type="checkbox" id="checkbox-@rowCredibilityId" data-check="expense-cover" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -33,7 +33,13 @@
     <Content Update="Views\BudgetManager\_deleteRecurringBillPartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\BudgetManager\_detailsSettlementPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\BudgetManager\_futurePaymentsBMPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\BudgetManager\_newExpensePartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\ExpenseManager\NewRecurringExpense.cshtml">

@@ -1,0 +1,54 @@
+﻿@model Flatmate.ViewModels.Dashboard.SettlementViewModel
+@using System.Globalization;
+@{
+    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("de-DE");
+}
+
+<div class="tab-pane fade show active accordion-content-tab" id="executedLiabilities" role="tabpanel" aria-labelledby="executedLiabilitiesTab">
+    <table class="w-100 table-sm table-striped">
+        <tbody>
+            @foreach (var liabilityInfo in Model.UserLiabilities)
+            {
+                <tr data-id="@liabilityInfo.TotalExpenseId-@liabilityInfo.UserInfo.Item1-@liabilityInfo.TeamInfo.Item1">
+                    <td>
+                        <small>For:</small>
+                        <img class="rounded-circle small-avatar-sizing" src="~/images/Dashboard/settlement/avatar.png" />
+                    </td>
+                    <td>
+                        @liabilityInfo.UserInfo.Item2
+                        <br />
+                        <i><small>@liabilityInfo.TeamInfo.Item2</small></i>
+                    </td>
+                    <td>
+                        <small>
+                            @liabilityInfo.FinalizationDate.ToString("d", cultureInfo)
+                        </small>
+                    </td>
+                    <td>@liabilityInfo.Value PLN</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="tab-pane fade accordion-content-tab" id="executedCredibilities" role="tabpanel" aria-labelledby="executedCredibilitiesTab">
+    <table class="w-100 table-sm table-striped">
+        <tbody>
+            @foreach (var credibilityInfo in Model.UserCredibilities)
+            {
+                <tr data-id="@credibilityInfo.TotalExpenseId-@credibilityInfo.UserInfo.Item1-@credibilityInfo.TeamInfo.Item1">
+                    <td>
+                        <small>From:</small>
+                        <img class="rounded-circle small-avatar-sizing" src="~/images/Dashboard/settlement/avatar.png" />
+                    </td>
+                    <td>
+                        @credibilityInfo.UserInfo.Item2
+                        <br />
+                        <i><small>@credibilityInfo.TeamInfo.Item2</small></i>
+                    </td>
+                    <td><small>@credibilityInfo.FinalizationDate.ToString("d", cultureInfo)</small></td>
+                    <td>@credibilityInfo.Value PLN</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -131,7 +131,7 @@ function populateSchedulerWithEventData() {
     var listEventInfoData = {
         id: "1",
         weekStart: parseCalendarHeadDateToMoment(indexOfstartingWeekHeader).format("YYYY MM DD hh:mm:ss a"),
-        weekEnd: parseCalendarHeadDateToMoment(indexOfEndingWeekHeader).format("YYYY MM DD hh:mm:ss a")
+        weekEnd: parseCalendarHeadDateToMoment(indexOfEndingWeekHeader).add(1, 'days').format("YYYY MM DD hh:mm:ss a")
     };
 
     $.ajax({
@@ -224,8 +224,6 @@ function initializeEventDetailsButton(eventTitle, startDateHour, endDateHour, bu
 
     return button;
 }
-
-
 function generateConfirmActionSection(eventButtonId, action) {
 
     const actionToCofirmType = {
@@ -267,7 +265,6 @@ function generateConfirmActionSection(eventButtonId, action) {
     actionConfirmDiv.appendChild(confirmButtonsDiv);
     return actionConfirmDiv;
 }
-
 function confirmDelete(deleteButtonId) {
     var deleteEventUrl = '/Scheduler/DeleteEvent';
     var eventId = document.getElementById('Id').value.toString();
@@ -283,7 +280,6 @@ function confirmDelete(deleteButtonId) {
         }
     });
 }
-
 function confirmUnsubcribe(unsubButtonId) {
     var unsubEventUrl = '/Scheduler/UnsubFromEvent';
     var eventId = document.getElementById('Id').value.toString();
@@ -381,12 +377,11 @@ function enterEventDetailsEditMode(nonEditModalData, editButtonHandle, parsedDat
             }
 
             participantsLabel.innerHTML = "Choose participants: ";
-            participantsLabel.classList.add("control-label");
             participantsLabel.setAttribute("for", "ParticipantIds");
             eventParticipantsWrapper.appendChild(participantsLabel);
 
             var groupId = groupIdInput.getAttribute("value");
-            var listGroupMembersInfoUrl = "/Scheduler/ListGroupMembersInfo";
+            var listGroupMembersInfoUrl = "/Teams/ListGroupMembersInfo";
             var listGroupMembersInfoData = { groupId: groupId };
 
             //TODO: change id to currentUser with cookies maybe
@@ -407,7 +402,7 @@ function enterEventDetailsEditMode(nonEditModalData, editButtonHandle, parsedDat
                         divLabel.classList.add("form-check-label");
 
                         var inputElem = document.createElement("input");
-                        inputElem.setAttribute('type', 'radio');
+                        inputElem.setAttribute('type', 'checkbox');
                         inputElem.setAttribute('name', 'ParticipantIds' + '-' + value.id);
                         inputElem.classList.add("form-check-input");
 
@@ -626,6 +621,7 @@ function parseToDatepickersDate(dateString) {
 }
 
 function initializeNewItemSelectGroup(selectId, groupMembersWrapperId) {
+    //TODO: change to teams or UsersController
     var listGroupInfoUrl = "/Scheduler/ListGroupInfo";
     //TODO: change to currentUserId
     var selectData = { userId: "1" };
@@ -656,7 +652,6 @@ function initializeNewItemSelectGroup(selectId, groupMembersWrapperId) {
                         }
 
                         var outerLabel = document.createElement("label");
-                        outerLabel.classList.add("control-label");
                         outerLabel.setAttribute("for", "ParticipantIds");
                         outerLabel.innerHTML = "Attach your friends:";
                         outerDiv.appendChild(outerLabel);
@@ -672,7 +667,7 @@ function initializeNewItemSelectGroup(selectId, groupMembersWrapperId) {
                             divLabel.classList.add("form-check-label");
 
                             var inputElem = document.createElement("input");
-                            inputElem.setAttribute('type', 'radio');
+                            inputElem.setAttribute('type', 'checkbox');
                             inputElem.setAttribute('name', 'ParticipantIds' + '-' + value["id"]);
                             inputElem.classList.add("form-check-input");
 
@@ -682,6 +677,205 @@ function initializeNewItemSelectGroup(selectId, groupMembersWrapperId) {
 
                             outerDiv.appendChild(groupMembersDiv);                            
                         });
+                    }
+                });
+            });
+        }
+    });
+}
+
+function initializeNewItemSelectGroupWithSelectionHandler(selectId, groupMembersWrapperId) {
+    var listGroupInfoUrl = "/Scheduler/ListGroupInfo";
+    //TODO: change to currentUserId
+    var selectData = { userId: "1" };
+    $.ajax({
+        type: "GET",
+        url: listGroupInfoUrl,
+        data: selectData,
+        success: function (result) {
+            var groupSelect = document.getElementById(selectId);
+            result.forEach((value, index, array) => {
+                var selectOption = document.createElement("option");
+                selectOption.text = value["name"];
+                selectOption.value = value["id"];
+                groupSelect.appendChild(selectOption);
+            });
+
+            $("#" + selectId).on('change', function () {
+                var listGroupMembersUrl = "/Teams/ListGroupMembersInfo";
+                var optionsData = { groupId: $('#' + selectId).find(':selected').val() };
+                $.ajax({
+                    type: "GET",
+                    url: listGroupMembersUrl,
+                    data: optionsData,
+                    success: function (result) {
+                        var outerDiv = document.getElementById(groupMembersWrapperId);
+                        while (outerDiv.firstChild) {
+                            outerDiv.removeChild(outerDiv.firstChild);
+                        }
+
+                        var outerLabel = document.createElement("label");
+                        outerLabel.setAttribute("for", "ParticipantIds");
+                        outerLabel.innerHTML = "Attach your friends:";
+                        outerDiv.appendChild(outerLabel);
+
+                        var groupMemberDivId, divLabel, inputElem,
+                            detailsChargingDiv, chargeLabel, innerChargeLabel, chargeInput,
+                            isPaidLabel, isPaidInput, isPaidHiddenInput, smallIsPaidLabel;
+                        
+                        var participantChargeInputName = "ParticipantsCharge",
+                            isChargePaidName = "DidParticipantsPay";
+
+                        result.forEach((value, index, array) => {
+                            if (value.id.toString() === selectData.userId) {
+                                var groupMembersDiv = document.createElement("div");
+                                groupMemberDivId = "memberDiv-" + index;
+                                groupMembersDiv.id = groupMemberDivId;
+                                groupMembersDiv.classList.add("form-check");
+
+                                divLabel = document.createElement("label");
+                                divLabel.classList.add("form-check-label");
+
+                                inputElem = document.createElement("input");
+                                inputElem.setAttribute('type', 'hidden');
+                                inputElem.setAttribute('name', 'ParticipantIds' + '-' + value["id"]);
+                                inputElem.value = true;
+
+                                divLabel.appendChild(inputElem);
+                                divLabel.append(value["fullName"]);
+                                groupMembersDiv.appendChild(divLabel);
+
+                                outerDiv.appendChild(groupMembersDiv);
+
+                                detailsChargingDiv = document.createElement('div');
+                                detailsChargingDiv.id = 'chargingDiv-' + index;
+
+                                chargeLabel = document.createElement('label');
+                                chargeLabel.classList.add("px-1", "col-3");
+
+                                innerChargeLabel = document.createElement('small');
+                                innerChargeLabel.innerHTML = "Charge value:";
+                                chargeLabel.appendChild(innerChargeLabel);
+                                detailsChargingDiv.appendChild(chargeLabel);
+
+                                chargeInput = document.createElement('input');
+                                chargeInput.classList.add("col-4", "mr-3", "d-inline", "form-control", "form-control-sm");
+                                chargeInput.name = participantChargeInputName;
+                                detailsChargingDiv.appendChild(chargeInput);
+
+                                isPaidLabel = document.createElement('label');
+                                isPaidLabel.classList.add("px-1", "col-4", "pl-3", "big-screen-left-border", "form-check-inline");
+
+                                isPaidInput = document.createElement('input');
+                                isPaidInput.name = isChargePaidName;
+                                isPaidInput.type = 'checkbox';
+                                isPaidInput.id = 'currentUserCheckbox';
+                                isPaidInput.setAttribute('checked', true);
+                                isPaidInput.setAttribute('disabled', true);
+                                isPaidInput.classList.add("my-3", "form-check-input");
+                                isPaidLabel.appendChild(isPaidInput);
+
+                                isPaidHiddenInput = document.createElement('input');
+                                isPaidHiddenInput.id = 'hidden-' + index;
+                                isPaidHiddenInput.name = isChargePaidName;
+                                isPaidHiddenInput.type = 'hidden';
+                                isPaidHiddenInput.value = 'true';
+                                isPaidLabel.appendChild(isPaidHiddenInput);
+
+                                smallIsPaidLabel = document.createElement('small');
+                                smallIsPaidLabel.innerHTML = "Bill was settled";
+                                isPaidLabel.appendChild(smallIsPaidLabel);
+                                detailsChargingDiv.appendChild(isPaidLabel);
+                                groupMembersDiv.appendChild(detailsChargingDiv);
+                            }
+                            else {
+                                groupMembersDiv = document.createElement("div");
+                                groupMemberDivId = "memberDiv-" + index;
+                                groupMembersDiv.id = groupMemberDivId;
+                                groupMembersDiv.classList.add("form-check");
+
+                                divLabel = document.createElement("label");
+                                divLabel.classList.add("form-check-label");
+
+                                inputElem = document.createElement("input");
+                                inputElem.setAttribute('type', 'checkbox');
+                                inputElem.setAttribute('name', 'ParticipantIds' + '-' + value["id"]);
+                                inputElem.classList.add("form-check-input");
+                                inputElem.addEventListener('click', function () {
+                                    if (document.getElementById('chargingDiv-' + index) === null) {
+
+                                        detailsChargingDiv = document.createElement('div');
+                                        detailsChargingDiv.id = 'chargingDiv-' + index;
+
+                                        chargeLabel = document.createElement('label');
+                                        chargeLabel.classList.add("px-1", "col-3");
+
+                                        innerChargeLabel = document.createElement('small');
+                                        innerChargeLabel.innerHTML = "Charge value:";
+                                        chargeLabel.appendChild(innerChargeLabel);
+                                        detailsChargingDiv.appendChild(chargeLabel);
+
+                                        chargeInput = document.createElement('input');
+                                        chargeInput.classList.add("col-4", "mr-3", "d-inline", "form-control", "form-control-sm");
+                                        chargeInput.name = participantChargeInputName;
+                                        detailsChargingDiv.appendChild(chargeInput);
+
+                                        isPaidLabel = document.createElement('label');
+                                        isPaidLabel.classList.add("px-1", "col-4", "pl-3", "big-screen-left-border", "form-check-inline");
+
+                                        isPaidInput = document.createElement('input');
+                                        isPaidInput.name = isChargePaidName;
+                                        isPaidInput.type = 'checkbox';
+                                        isPaidInput.classList.add("my-3", "form-check-input");
+                                        isPaidInput.addEventListener('change', function () {
+                                            const currentValue = $('#hidden-' + index).val();
+                                            console.log(currentValue);
+                                            if (currentValue === "false") {
+                                                $('#hidden-' + index).val("true");
+                                            }
+                                            else {
+                                                $('#hidden-' + index).val("false");
+                                            }
+                                        });
+                                        isPaidLabel.appendChild(isPaidInput);
+
+                                        isPaidHiddenInput = document.createElement('input');
+                                        isPaidHiddenInput.id = 'hidden-' + index;
+                                        isPaidHiddenInput.name = isChargePaidName;
+                                        isPaidHiddenInput.type = 'hidden';
+                                        isPaidHiddenInput.value = 'false';
+                                        isPaidLabel.appendChild(isPaidHiddenInput);
+
+                                        smallIsPaidLabel = document.createElement('small');
+                                        smallIsPaidLabel.innerHTML = "Bill was settled";
+                                        isPaidLabel.appendChild(smallIsPaidLabel);
+                                        detailsChargingDiv.appendChild(isPaidLabel);
+                                        groupMembersDiv.appendChild(detailsChargingDiv);
+                                    }
+                                    else {
+                                        $('#chargingDiv-' + index).remove();
+                                    }
+
+                                    var isDivideEquallyChecked = $('#divideBillEquallyCheckbox').prop('checked');
+
+                                    if (isDivideEquallyChecked) {
+                                        var groupMembersWrapperSelector = '#' + groupMembersWrapperId;
+                                        setChargeValues(groupMembersWrapperSelector);
+                                    }
+                                });
+
+                                divLabel.appendChild(inputElem);
+                                divLabel.append(value["fullName"]);
+                                groupMembersDiv.appendChild(divLabel);
+
+                                outerDiv.appendChild(groupMembersDiv);
+                            }
+                        });      
+
+                        var isDivideEquallyChecked = $('#divideBillEquallyCheckbox').prop('checked');
+                        if (isDivideEquallyChecked === true) {
+                            setChargeValues('#groupMembersExpenseCreateWrapper');
+                        }
                     }
                 });
             });

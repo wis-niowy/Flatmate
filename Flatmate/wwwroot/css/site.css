@@ -283,6 +283,23 @@ li:hover .expense-thumbnail {
     }
 }
 
+.accordion-content-tall {
+    max-height: 450px;
+    overflow: auto;
+}
+
+.accordion-content-short {
+    max-height: 300px;
+    overflow: auto;
+}
+
+.accordion-content-tab {
+    max-height: 250px;
+    overflow: auto;
+}
+
+
+
 
 
 /* Custom Bootstrap 4 CSS end */

@@ -25,21 +25,21 @@
                     </li>
                 }
             </ul>
-            <label class="col-lg-5"><small class="font-weight-bold">Expense category:</small><br /> @Model.ExpenseCategory</label>
+            <label class="col-sm-5"><small class="font-weight-bold">Expense category:</small><br /> @Model.ExpenseCategory</label>
             <input asp-for="ExpenseCategory" type="hidden" />
-            <label class="col-lg-5"><small class="font-weight-bold">Group:</small><br /> @Model.GroupName</label>
+            <label class="col-sm-5"><small class="font-weight-bold">Group:</small><br /> @Model.GroupName</label>
             <input asp-for="GroupId" type="hidden" />
             <hr />
-            @*TODO: remove 'control-label' class from all elements*@
+            @*TODO: remove '' class from all elements*@
             <div class="form-group">
-                <label asp-for="Value" class="col-lg-4">Total value:</label>
-                <input asp-for="Value" class="col-lg-7 d-inline form-control form-control-sm" />
+                <label asp-for="Value" class="col-sm-4">Total value:</label>
+                <input asp-for="Value" class="col-sm-7 d-inline form-control form-control-sm" />
                 <span asp-validation-for="Value" class="text-danger"></span>
             </div>
-            <div class="form-check-inline col-lg-6">
+            <div class="form-check-inline col-sm-6">
                 <input id="divideBillEquallyCheckbox" type="checkbox" class="my-3 form-check-input" /><small> Divide charge equally</small>
             </div>
-            <div class="form-check-inline col-lg-5">
+            <div class="form-check-inline col-sm-5">
                 <input asp-for="IsCovered" type="checkbox" class="my-3 form-check-input" /><small>Mark this bill as settled</small>
                 <span asp-validation-for="IsCovered" class="text-danger"></span>
             </div>
@@ -52,12 +52,12 @@
                     var hiddenInputId = "hidden-" + i.ToString();
 
                     <div class="form-group">
-                        <input name="ParticipantIds" type="hidden" value="@Model.ParticipantIds[i]" />
+                    <input name="ParticipantIds" type="hidden" value="@Model.ParticipantIds[i]" />
                         <div class="font-weight-bold">@Model.ParticipantNames[i]</div>
                         <div>
-                            <label class="px-1 col-lg-3"><small>Charge value:</small></label>
-                            <input name="@participantChargeInputId" class="col-lg-4 mr-lg-3 d-inline form-control form-control-sm" />
-                            <label class="px-1 col-lg-4 pl-lg-3 big-screen-left-border form-check-inline">
+                            <label class="px-1 col-md-3"><small>Charge value:</small></label>
+                            <input name="@participantChargeInputId" class="col-md-4 mr-md-2 d-inline form-control form-control-sm" />
+                            <label class="px-1 col-md-4 pl-md-2 big-screen-left-border form-check-inline">
                                 <input name="@isChargePaidId" type="checkbox" class="my-3 form-check-input" />
                                 <input id="@hiddenInputId" name="@isChargePaidId" type="hidden" value="false" />
                                 <small>Bill was settled</small>
